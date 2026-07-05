@@ -387,3 +387,30 @@ font-size:32px;
 }
 
 }
+/* ================= Eliminar ================= */
+
+.eliminar{
+
+    background:#e53935;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    width:42px;
+    height:42px;
+    font-size:20px;
+    cursor:pointer;
+    transition:.2s;
+
+}
+
+.eliminar:hover{
+
+    transform:scale(1.08);
+
+}
+
+.eliminar:active{
+
+    transform:scale(.95);
+
+}
