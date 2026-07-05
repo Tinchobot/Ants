@@ -120,11 +120,17 @@ function actualizarPantalla() {
 
     lista.innerHTML = "";
 
+    const hoy = new Date().toLocaleDateString("es-AR");
+
     let total = 0;
+    let cantidad = 0;
 
     historial.slice(0, 10).forEach(item => {
 
-        total += Number(item.monto);
+        if (item.fecha === hoy) {
+            total += Number(item.monto);
+            cantidad++;
+        }
 
         const li = document.createElement("li");
 
@@ -148,7 +154,7 @@ function actualizarPantalla() {
         "$ " + total.toLocaleString("es-AR");
 
     cantidadHoy.innerHTML =
-        historial.length + " gastos";
+        cantidad + (cantidad === 1 ? " gasto" : " gastos");
 
 }
 
