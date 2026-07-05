@@ -44,20 +44,24 @@ async function guardar() {
         return;
     }
 
-    const partes = texto.split(" ");
+   const partes = texto.trim().split(/\s+/);
 
-    const monto = parseFloat(
-    partes.pop()
-        .replace(/\./g, "")   // elimina los puntos de miles
-        .replace(",", ".")    // convierte la coma decimal en punto
-);
+let montoTexto = partes.pop();
 
-    const concepto = partes.join(" ");
+// Elimina puntos de miles y espacios
+montoTexto = montoTexto.replace(/\./g, "");
 
-    if (!concepto || isNaN(monto)) {
-        mostrar("Formato: Nafta 58000", "#d32f2f");
-        return;
-    }
+// Si tiene coma decimal, la convierte
+montoTexto = montoTexto.replace(",", ".");
+
+const monto = Number(montoTexto);
+
+const concepto = partes.join(" ");
+
+if (!concepto || Number.isNaN(monto)) {
+    mostrar("Formato: Nafta 58000", "#d32f2f");
+    return;
+}
 
     guardarBtn.disabled = true;
     guardarBtn.innerHTML = "⏳ Guardando...";
