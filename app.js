@@ -230,3 +230,25 @@ function eliminarGasto(indice){
     actualizarPantalla();
 
 }
+// ---------------------------
+// Eliminar gasto
+// ---------------------------
+
+function eliminarGasto(indice){
+
+    if(!confirm("¿Eliminar este gasto?")){
+        return;
+    }
+
+    historial.splice(indice,1);
+
+    localStorage.setItem(
+        "ants_historial",
+        JSON.stringify(historial)
+    );
+
+    actualizarPantalla();
+
+    mostrar("🗑️ Gasto eliminado","#d32f2f");
+
+}
