@@ -46,7 +46,11 @@ async function guardar() {
 
     const partes = texto.split(" ");
 
-    const monto = parseFloat(partes.pop().replace(",", "."));
+    const monto = parseFloat(
+    partes.pop()
+        .replace(/\./g, "")   // elimina los puntos de miles
+        .replace(",", ".")    // convierte la coma decimal en punto
+);
 
     const concepto = partes.join(" ");
 
