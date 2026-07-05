@@ -1,0 +1,389 @@
+/* ===================================================
+   ANTS 3.0
+   =================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:Arial,Helvetica,sans-serif;
+
+    background:linear-gradient(180deg,#FFE66D 0%,#FFD54F 100%);
+
+    min-height:100vh;
+
+    color:#222;
+
+}
+
+.oculto{
+
+    display:none;
+
+}
+
+/* ================= Splash ================= */
+
+#splash{
+
+    position:fixed;
+
+    inset:0;
+
+    background:#FFD54F;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:999;
+
+    animation:desaparecer .8s ease forwards;
+
+    animation-delay:1.8s;
+
+}
+
+.antSplash{
+
+    width:180px;
+
+    animation:flotar 2s infinite ease-in-out;
+
+}
+
+#splash h1{
+
+    margin-top:20px;
+
+    font-size:42px;
+
+    letter-spacing:4px;
+
+}
+
+#splash p{
+
+    margin-top:10px;
+
+    font-size:18px;
+
+    color:#444;
+
+}
+
+@keyframes desaparecer{
+
+to{
+
+opacity:0;
+
+visibility:hidden;
+
+}
+
+}
+
+@keyframes flotar{
+
+0%{transform:translateY(0);}
+
+50%{transform:translateY(-10px);}
+
+100%{transform:translateY(0);}
+
+}
+
+/* ================= App ================= */
+
+#app{
+
+    max-width:500px;
+
+    margin:auto;
+
+    padding:20px;
+
+}
+
+header{
+
+    text-align:center;
+
+    margin-top:25px;
+
+}
+
+.logo{
+
+    width:120px;
+
+    filter:drop-shadow(0 10px 18px rgba(0,0,0,.25));
+
+}
+
+header h2{
+
+    margin-top:15px;
+
+    font-size:30px;
+
+}
+
+/* ================= Panel ================= */
+
+.panel{
+
+    margin-top:25px;
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:25px;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.15);
+
+}
+
+#entrada{
+
+    width:100%;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    border:2px solid #DDD;
+
+    font-size:22px;
+
+    outline:none;
+
+    transition:.25s;
+
+}
+
+#entrada:focus{
+
+    border-color:#FFD54F;
+
+    box-shadow:0 0 0 5px rgba(255,213,79,.30);
+
+}
+
+.acciones{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-top:20px;
+
+}
+
+#voz{
+
+    width:70px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#333;
+
+    color:white;
+
+    font-size:28px;
+
+    cursor:pointer;
+
+}
+
+#guardar{
+
+    flex:1;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#FFD54F;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+#guardar:hover{
+
+    transform:translateY(-2px);
+
+}
+
+#guardar:active{
+
+    transform:scale(.97);
+
+}
+
+button{
+
+    padding:18px;
+
+}
+
+#mensaje{
+
+    margin-top:18px;
+
+    min-height:24px;
+
+    text-align:center;
+
+    font-weight:bold;
+
+}
+
+/* ================= Resumen ================= */
+
+.resumen{
+
+    margin-top:20px;
+
+}
+
+.cardResumen{
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:20px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.12);
+
+    text-align:center;
+
+}
+
+.cardResumen h3{
+
+    color:#666;
+
+    margin-bottom:10px;
+
+}
+
+#totalHoy{
+
+    display:block;
+
+    font-size:38px;
+
+    font-weight:bold;
+
+}
+
+#cantidadHoy{
+
+    display:block;
+
+    margin-top:6px;
+
+    color:#666;
+
+}
+
+/* ================= Historial ================= */
+
+.historial{
+
+    margin-top:20px;
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:20px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.12);
+
+}
+
+.historial h3{
+
+    margin-bottom:15px;
+
+}
+
+#listaHistorial{
+
+    list-style:none;
+
+}
+
+#listaHistorial li{
+
+    padding:14px 0;
+
+    border-bottom:1px solid #EEE;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+#listaHistorial li:last-child{
+
+    border-bottom:none;
+
+}
+
+.vacio{
+
+    color:#777;
+
+    justify-content:center !important;
+
+}
+
+/* ================= Responsive ================= */
+
+@media(max-width:480px){
+
+header h2{
+
+font-size:24px;
+
+}
+
+#entrada{
+
+font-size:18px;
+
+}
+
+#totalHoy{
+
+font-size:32px;
+
+}
+
+}
