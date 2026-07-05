@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>Ants</title>
+
+<meta name="theme-color" content="#FFD54F">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="manifest" href="manifest.json">
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="icon" href="icon-192.png">
+
+</head>
+
+<body>
+
+<div id="splash">
+
+    <img src="ant.png" class="antSplash">
+
+    <h1>ANTS</h1>
+
+    <p>Cada peso cuenta.</p>
+
+</div>
+
+<main id="app" class="oculto">
+
+<header>
+
+<img src="ant.png" class="logo">
+
+<h2>¿En qué gastamos ahora?</h2>
+
+</header>
+
+<section class="panel">
+
+<input
+
+id="entrada"
+
+type="text"
+
+placeholder="Ej: Nafta 58000"
+
+autocomplete="off"
+
+>
+
+<div class="acciones">
+
+<button id="voz">
+
+🎤
+
+</button>
+
+<button id="guardar">
+
+💾 Guardar
+
+</button>
+
+</div>
+
+<div id="mensaje"></div>
+
+</section>
+
+<section class="resumen">
+
+<div class="cardResumen">
+
+<h3>Hoy</h3>
+
+<span id="totalHoy">$0</span>
+
+<small id="cantidadHoy">0 gastos</small>
+
+</div>
+
+</section>
+
+<section class="historial">
+
+<h3>Últimos gastos</h3>
+
+<ul id="listaHistorial">
+
+<li class="vacio">
+
+Todavía no hay gastos.
+
+</li>
+
+</ul>
+
+</section>
+
+</main>
+
+<script src="app.js"></script>
+
+<script>
+
+if("serviceWorker" in navigator){
+
+navigator.serviceWorker.register("sw.js");
+
+}
+
+</script>
+
+</body>
+
+</html>
