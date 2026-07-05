@@ -125,7 +125,7 @@ function actualizarPantalla() {
     let total = 0;
     let cantidad = 0;
 
-    historial.slice(0, 10).forEach(item => {
+    historial.slice(0, 10).forEach((item, index) => {
 
         if (item.fecha === hoy) {
             total += Number(item.monto);
@@ -135,9 +135,17 @@ function actualizarPantalla() {
         const li = document.createElement("li");
 
         li.innerHTML = `
-            <span>${item.concepto}</span>
-            <strong>$ ${Number(item.monto).toLocaleString("es-AR")}</strong>
-        `;
+<div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+    <div>
+        <span>${item.concepto}</span><br>
+        <strong>$ ${Number(item.monto).toLocaleString("es-AR")}</strong>
+    </div>
+
+    <button class="eliminar" onclick="eliminarGasto(${index})">
+        🗑️
+    </button>
+</div>
+`;
 
         lista.appendChild(li);
 
