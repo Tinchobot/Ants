@@ -208,3 +208,17 @@ if ("webkitSpeechRecognition" in window) {
     vozBtn.style.display = "none";
 
 }
+function eliminarGasto(indice){
+
+    if(!confirm("¿Eliminar este gasto?")) return;
+
+    historial.splice(indice,1);
+
+    localStorage.setItem(
+        "ants_historial",
+        JSON.stringify(historial)
+    );
+
+    actualizarPantalla();
+
+}
