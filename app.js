@@ -6,10 +6,6 @@ const WEBHOOK = "https://hook.us2.make.com/ecky1ftg71ist2i2j3pgmvqcxk7ig77j";
 
 const entrada = document.getElementById("entrada");
 const guardarBtn = document.getElementById("guardar");
-borrarTodoBtn.addEventListener(
-    "click",
-    borrarTodo
-);
 const vozBtn = document.getElementById("voz");
 const mensaje = document.getElementById("mensaje");
 const lista = document.getElementById("listaHistorial");
@@ -17,8 +13,7 @@ const totalHoy = document.getElementById("totalHoy");
 const cantidadHoy = document.getElementById("cantidadHoy");
 const splash = document.getElementById("splash");
 const app = document.getElementById("app");
-const borrarTodoBtn =
-document.getElementById("borrarTodo");
+const borrarTodoBtn = document.getElementById("borrarTodo");
 const sonidoGuardar = new Audio("guardar.mp3");
 
 let historial =
@@ -46,6 +41,11 @@ actualizarPantalla();
 
 guardarBtn.addEventListener("click",guardar);
 
+if (borrarTodoBtn) {
+
+    borrarTodoBtn.addEventListener("click", borrarTodo);
+
+}
 entrada.addEventListener("keydown",(e)=>{
 
     if(e.key==="Enter"){
@@ -116,7 +116,6 @@ if (!Number.isFinite(monto)) {
 
 }
 
-    }
 
     guardarBtn.disabled=true;
 
