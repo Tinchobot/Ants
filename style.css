@@ -414,3 +414,35 @@ font-size:32px;
     transform:scale(.95);
 
 }
+
+.btnSecundario{
+
+    width:100%;
+    margin-top:15px;
+    padding:15px;
+
+    background:#ffffff;
+
+    border:2px solid #d32f2f;
+
+    color:#d32f2f;
+
+    border-radius:16px;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.btnSecundario:hover{
+
+    background:#d32f2f;
+
+    color:#fff;
+
+}
