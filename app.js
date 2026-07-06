@@ -67,42 +67,48 @@ async function guardar(){
 
     }
 
-    // Buscar el monto al final del texto
+   // Interpretar concepto y monto
 
-    const match=texto.match(/^(.*)\s+([\d.,]+)$/);
+const partes = texto.trim().split(/\s+/);
 
-    if(!match){
+if (partes.length < 2) {
 
-        mostrar("Formato: Nafta 58000","#d32f2f");
+    mostrar("Formato: Nafta 58000", "#d32f2f");
 
-        return;
+    return;
 
-    }
+}
 
-    const concepto=match[1].trim();
+let montoTexto = partes.pop();
 
-    let montoTexto=match[2].trim();
+const concepto = partes.join(" ");
 
-    if(montoTexto.includes(",")){
+// Argentina:
+// 100.000 -> 100000
+// 1.250.000 -> 1250000
+// 100,50 -> 100.50
 
-        montoTexto=montoTexto
-        .replace(/\./g,"")
-        .replace(",",".");
-    }
-    else{
+if (montoTexto.includes(",")) {
 
-        montoTexto=montoTexto
-        .replace(/\./g,"");
+    montoTexto = montoTexto
+        .replace(/\./g, "")
+        .replace(",", ".");
 
-    }
+} else {
 
-    const monto=Number(montoTexto);
+    montoTexto = montoTexto.replace(/\./g, "");
 
-    if(isNaN(monto)){
+}
 
-        mostrar("Monto inválido","#d32f2f");
+const monto = Number(montoTexto);
 
-        return;
+if (!Number.isFinite(monto)) {
+
+    mostrar("Monto inválido", "#d32f2f");
+
+    return;
+
+}
 
     }
 
