@@ -1,4 +1,4 @@
-const CACHE_NAME = "ants-v2.1";
+const CACHE_NAME = "ants-v2.2";
 
 const FILES_TO_CACHE = [
   "./",
@@ -12,20 +12,21 @@ const FILES_TO_CACHE = [
 
 // Instalar
 self.addEventListener("install", (event) => {
+  self.skipWaiting();
+
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
+    caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(FILES_TO_CACHE);
     })
   );
-  self.skipWaiting();
 });
 
 // Activar
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
+    caches.keys().then(keys =>
       Promise.all(
-        keys.map((key) => {
+        keys.map(key => {
           if (key !== CACHE_NAME) {
             return caches.delete(key);
           }
@@ -37,33 +38,29 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch
+// Siempre intenta bajar la versión nueva
 self.addEventListener("fetch", (event) => {
+
   if (event.request.method !== "GET") return;
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
 
-      return fetch(event.request)
-        .then((response) => {
-          if (
-            !response ||
-            response.status !== 200 ||
-            response.type !== "basic"
-          ) {
-            return response;
-          }
+    fetch(event.request)
+      .then(response => {
 
-          const copy = response.clone();
+        const copia = response.clone();
 
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, copy);
-          });
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, copia);
+        });
 
-          return response;
-        })
-        .catch(() => caches.match("./index.html"));
-    })
+        return response;
+
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
+
   );
+
 });
