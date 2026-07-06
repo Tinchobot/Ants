@@ -1,5 +1,5 @@
 // =====================================
-// ANTS 3.0
+// ANTS 3.1
 // =====================================
 
 const WEBHOOK = "https://hook.us2.make.com/ecky1ftg71ist2i2j3pgmvqcxk7ig77j";
@@ -14,163 +14,316 @@ const cantidadHoy = document.getElementById("cantidadHoy");
 const splash = document.getElementById("splash");
 const app = document.getElementById("app");
 
-let historial = JSON.parse(localStorage.getItem("ants_historial")) || [];
+const sonidoGuardar = new Audio("guardar.mp3");
 
-// Mostrar la app después del splash
+let historial =
+JSON.parse(localStorage.getItem("ants_historial")) || [];
+
+// ---------------------------
+// Splash
+// ---------------------------
+
 setTimeout(() => {
-    splash.style.display = "none";
-    app.classList.remove("oculto");
-    entrada.focus();
-}, 2000);
 
-// Cargar historial al iniciar
+    splash.style.display = "none";
+
+    app.classList.remove("oculto");
+
+    entrada.focus();
+
+},2000);
+
+// ---------------------------
+// Inicio
+// ---------------------------
+
 actualizarPantalla();
 
-guardarBtn.addEventListener("click", guardar);
+guardarBtn.addEventListener("click",guardar);
 
-entrada.addEventListener("keydown", e => {
-    if (e.key === "Enter") guardar();
+entrada.addEventListener("keydown",(e)=>{
+
+    if(e.key==="Enter"){
+
+        guardar();
+
+    }
+
 });
 
 // ---------------------------
-// Guardar gasto
+// Guardar
 // ---------------------------
-async function guardar() {
 
-    const texto = entrada.value.trim();
+async function guardar(){
 
-    if (texto === "") {
-        mostrar("Escribí un gasto.", "#d32f2f");
+    const texto=entrada.value.trim();
+
+    if(texto===""){
+
+        mostrar("Escribí un gasto","#d32f2f");
+
         return;
+
     }
 
-   const partes = texto.trim().split(/\s+/);
+    // Buscar el monto al final del texto
 
-let montoTexto = partes.pop();
+    const match=texto.match(/^(.*)\s+([\d.,]+)$/);
 
-// Elimina puntos de miles y espacios
-montoTexto = montoTexto.replace(/\./g, "");
+    if(!match){
 
-// Si tiene coma decimal, la convierte
-montoTexto = montoTexto.replace(",", ".");
+        mostrar("Formato: Nafta 58000","#d32f2f");
 
-const monto = Number(montoTexto);
+        return;
 
-const concepto = partes.join(" ");
+    }
 
-if (!concepto || Number.isNaN(monto)) {
-    mostrar("Formato: Nafta 58000", "#d32f2f");
-    return;
-}
+    const concepto=match[1].trim();
 
-    guardarBtn.disabled = true;
-    guardarBtn.innerHTML = "⏳ Guardando...";
+    let montoTexto=match[2].trim();
 
-    const ahora = new Date();
+    if(montoTexto.includes(",")){
 
-    const gasto = {
+        montoTexto=montoTexto
+        .replace(/\./g,"")
+        .replace(",",".");
+    }
+    else{
+
+        montoTexto=montoTexto
+        .replace(/\./g,"");
+
+    }
+
+    const monto=Number(montoTexto);
+
+    if(isNaN(monto)){
+
+        mostrar("Monto inválido","#d32f2f");
+
+        return;
+
+    }
+
+    guardarBtn.disabled=true;
+
+    guardarBtn.innerHTML="⏳ Guardando...";
+
+    const ahora=new Date();
+
+    const gasto={
+
+        id:Date.now(),
+
         concepto,
+
         monto,
-        fecha: ahora.toLocaleDateString("es-AR"),
-        hora: ahora.toLocaleTimeString("es-AR")
+
+        fecha:ahora.toLocaleDateString("es-AR"),
+
+        hora:ahora.toLocaleTimeString("es-AR")
+
     };
 
     historial.unshift(gasto);
 
-    if (historial.length > 50)
+    if(historial.length>100){
+
         historial.pop();
-
-    localStorage.setItem("ants_historial", JSON.stringify(historial));
-
-    actualizarPantalla();
-
-    try {
-
-        await fetch(WEBHOOK, {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                fecha: gasto.fecha,
-                hora: gasto.hora,
-                gasto: gasto.concepto,
-                monto: gasto.monto
-            })
-
-        });
-
-        mostrar("✅ Guardado correctamente", "#2e7d32");
-
-    } catch {
-
-        mostrar("📡 Sin conexión. Quedó guardado localmente.", "#ef6c00");
 
     }
 
-    entrada.value = "";
+    localStorage.setItem(
 
-    guardarBtn.disabled = false;
-    guardarBtn.innerHTML = "💾 Guardar";
+        "ants_historial",
+
+        JSON.stringify(historial)
+
+    );
+
+    actualizarPantalla();
+
+    try{
+
+        const respuesta=await fetch(
+
+            WEBHOOK,
+
+            {
+
+                method:"POST",
+
+                headers:{
+
+                    "Content-Type":"application/json"
+
+                },
+
+                body:JSON.stringify({
+
+                    id:gasto.id,
+
+                    fecha:gasto.fecha,
+
+                    hora:gasto.hora,
+
+                    gasto:gasto.concepto,
+
+                    monto:gasto.monto
+
+                })
+
+            }
+
+        );
+
+        if(!respuesta.ok){
+
+            throw new Error();
+
+        }
+
+        sonidoGuardar.currentTime=0;
+
+        sonidoGuardar.play().catch(()=>{});
+
+        mostrar(
+
+            "✅ Guardado correctamente",
+
+            "#2e7d32"
+
+        );
+
+    }catch{
+
+        mostrar(
+
+            "📡 Guardado localmente",
+
+            "#ef6c00"
+
+        );
+
+    }
+
+    entrada.value="";
+
+    guardarBtn.disabled=false;
+
+    guardarBtn.innerHTML="💾 Guardar";
 
     entrada.focus();
 
 }
-
 // ---------------------------
-// Historial
+// Actualizar pantalla
 // ---------------------------
 
-function actualizarPantalla() {
+function actualizarPantalla(){
 
-    lista.innerHTML = "";
+    lista.innerHTML="";
 
-    const hoy = new Date().toLocaleDateString("es-AR");
+    const hoy=new Date().toLocaleDateString("es-AR");
 
-    let total = 0;
-    let cantidad = 0;
+    let totalHoyCalculado=0;
+    let cantidadHoyCalculada=0;
 
-    historial.slice(0, 10).forEach((item, index) => {
+    historial.forEach((item,index)=>{
 
-        if (item.fecha === hoy) {
-            total += Number(item.monto);
-            cantidad++;
+        if(item.fecha===hoy){
+
+            totalHoyCalculado+=Number(item.monto);
+            cantidadHoyCalculada++;
+
         }
 
-        const li = document.createElement("li");
+    });
 
-        li.innerHTML = `
-<div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
-    <div>
-        <span>${item.concepto}</span><br>
-        <strong>$ ${Number(item.monto).toLocaleString("es-AR")}</strong>
-    </div>
+    historial.slice(0,10).forEach((item,index)=>{
 
-    <button class="eliminar" onclick="eliminarGasto(${index})">
+        const li=document.createElement("li");
+
+        li.innerHTML=`
+
+        <div class="infoGasto">
+
+            <span>${item.concepto}</span><br>
+
+            <strong>$ ${Number(item.monto).toLocaleString("es-AR")}</strong>
+
+            <br>
+
+            <small>${item.fecha}</small>
+
+        </div>
+
+        <button class="eliminar"
+
+        onclick="eliminarGasto(${index})">
+
         🗑️
-    </button>
-</div>
-`;
+
+        </button>
+
+        `;
 
         lista.appendChild(li);
 
     });
 
-    if (historial.length === 0) {
+    if(historial.length===0){
 
-        lista.innerHTML =
-            "<li class='vacio'>Todavía no hay gastos.</li>";
+        lista.innerHTML=
+
+        "<li class='vacio'>Todavía no hay gastos.</li>";
 
     }
 
-    totalHoy.innerHTML =
-        "$ " + total.toLocaleString("es-AR");
+    totalHoy.innerHTML=
 
-    cantidadHoy.innerHTML =
-        cantidad + (cantidad === 1 ? " gasto" : " gastos");
+    "$ "+totalHoyCalculado.toLocaleString("es-AR");
+
+    cantidadHoy.innerHTML=
+
+    cantidadHoyCalculada+
+
+    (cantidadHoyCalculada===1?" gasto":" gastos");
+
+}
+
+// ---------------------------
+// Eliminar gasto
+// ---------------------------
+
+function eliminarGasto(indice){
+
+    if(!confirm("¿Eliminar este gasto?")){
+
+        return;
+
+    }
+
+    historial.splice(indice,1);
+
+    localStorage.setItem(
+
+        "ants_historial",
+
+        JSON.stringify(historial)
+
+    );
+
+    actualizarPantalla();
+
+    mostrar(
+
+        "🗑️ Gasto eliminado",
+
+        "#d32f2f"
+
+    );
 
 }
 
@@ -178,20 +331,19 @@ function actualizarPantalla() {
 // Mensajes
 // ---------------------------
 
-function mostrar(texto, color) {
+function mostrar(texto,color){
 
-    mensaje.innerHTML = texto;
+    mensaje.innerHTML=texto;
 
-    mensaje.style.color = color;
+    mensaje.style.color=color;
 
-    setTimeout(() => {
+    setTimeout(()=>{
 
-        mensaje.innerHTML = "";
+        mensaje.innerHTML="";
 
-    }, 3000);
+    },3000);
 
 }
-
 // ---------------------------
 // Reconocimiento de voz
 // ---------------------------
@@ -201,9 +353,8 @@ if ("webkitSpeechRecognition" in window) {
     const reconocimiento = new webkitSpeechRecognition();
 
     reconocimiento.lang = "es-AR";
-
     reconocimiento.interimResults = false;
-
+    reconocimiento.continuous = false;
     reconocimiento.maxAlternatives = 1;
 
     vozBtn.addEventListener("click", () => {
@@ -212,10 +363,16 @@ if ("webkitSpeechRecognition" in window) {
 
     });
 
-    reconocimiento.onresult = e => {
+    reconocimiento.onresult = (e) => {
 
-        entrada.value =
-            e.results[0][0].transcript;
+        entrada.value = e.results[0][0].transcript;
+        entrada.focus();
+
+    };
+
+    reconocimiento.onerror = () => {
+
+        mostrar("No pude reconocer la voz.", "#ef6c00");
 
     };
 
@@ -224,39 +381,29 @@ if ("webkitSpeechRecognition" in window) {
     vozBtn.style.display = "none";
 
 }
-function eliminarGasto(indice){
 
-    if(!confirm("¿Eliminar este gasto?")) return;
+// ---------------------------
+// Sincronizar cuando vuelve Internet
+// ---------------------------
 
-    historial.splice(indice,1);
+window.addEventListener("online", () => {
 
-    localStorage.setItem(
-        "ants_historial",
-        JSON.stringify(historial)
-    );
+    mostrar("🌐 Conexión restablecida", "#2e7d32");
+
+});
+
+// ---------------------------
+// Refrescar pantalla al volver
+// ---------------------------
+
+window.addEventListener("focus", () => {
 
     actualizarPantalla();
 
-}
+});
+
 // ---------------------------
-// Eliminar gasto
+// Fin
 // ---------------------------
 
-function eliminarGasto(indice){
-
-    if(!confirm("¿Eliminar este gasto?")){
-        return;
-    }
-
-    historial.splice(indice,1);
-
-    localStorage.setItem(
-        "ants_historial",
-        JSON.stringify(historial)
-    );
-
-    actualizarPantalla();
-
-    mostrar("🗑️ Gasto eliminado","#d32f2f");
-
-}
+console.log("🐜 Ants 3.1 iniciado correctamente");
