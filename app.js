@@ -69,6 +69,7 @@ function interpretarGasto(texto){
 
         return null;
 
+ }       
 
 const monto = Number(numeros[numeros.length - 1]);
 
