@@ -340,3 +340,33 @@ window.addEventListener("focus", () => {
 // =====================================
 
 console.log("🐜 Ants 1.0 iniciado correctamente");
+
+// =====================================
+// Borrar todo
+// =====================================
+
+function borrarTodo() {
+
+    if (historial.length === 0) {
+
+        mostrar("No hay gastos.", "#ef6c00");
+
+        return;
+
+    }
+
+    if (!confirm("¿Eliminar TODOS los gastos?")) {
+
+        return;
+
+    }
+
+    historial = [];
+
+    localStorage.removeItem("ants_historial");
+
+    actualizarPantalla();
+
+    mostrar("🗑️ Historial eliminado", "#d32f2f");
+
+}
