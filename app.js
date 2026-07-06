@@ -6,6 +6,10 @@ const WEBHOOK = "https://hook.us2.make.com/ecky1ftg71ist2i2j3pgmvqcxk7ig77j";
 
 const entrada = document.getElementById("entrada");
 const guardarBtn = document.getElementById("guardar");
+borrarTodoBtn.addEventListener(
+    "click",
+    borrarTodo
+);
 const vozBtn = document.getElementById("voz");
 const mensaje = document.getElementById("mensaje");
 const lista = document.getElementById("listaHistorial");
@@ -13,7 +17,8 @@ const totalHoy = document.getElementById("totalHoy");
 const cantidadHoy = document.getElementById("cantidadHoy");
 const splash = document.getElementById("splash");
 const app = document.getElementById("app");
-
+const borrarTodoBtn =
+document.getElementById("borrarTodo");
 const sonidoGuardar = new Audio("guardar.mp3");
 
 let historial =
@@ -438,3 +443,38 @@ window.addEventListener("focus", () => {
 // ---------------------------
 
 console.log("🐜 Ants 3.1 iniciado correctamente");
+function borrarTodo(){
+
+    if(historial.length===0){
+
+        mostrar(
+            "No hay gastos.",
+            "#ef6c00"
+        );
+
+        return;
+
+    }
+
+    if(!confirm(
+        "¿Eliminar TODOS los gastos?"
+    )) return;
+
+    if(!confirm(
+        "Esta acción no se puede deshacer."
+    )) return;
+
+    historial=[];
+
+    localStorage.removeItem(
+        "ants_historial"
+    );
+
+    actualizarPantalla();
+
+    mostrar(
+        "🗑️ Historial eliminado",
+        "#d32f2f"
+    );
+
+}
