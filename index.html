@@ -19,7 +19,9 @@
 
 <link rel="stylesheet" href="style.css">
 
-<link rel="icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+
+<link rel="apple-touch-icon" href="icon-192.png">
 
 </head>
 
@@ -115,14 +117,14 @@ Todavía no hay gastos.
 
 <script>
 
-if("serviceWorker" in navigator){
+if ("serviceWorker" in navigator) {
 
-navigator.serviceWorker.register("sw.js");
+    window.addEventListener("load", () => {
+
+        navigator.serviceWorker.register("./sw.js");
+
+    });
 
 }
 
 </script>
-
-</body>
-
-</html>
