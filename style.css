@@ -451,8 +451,34 @@ font-size:32px;
 
 .linkEliminar:hover{
 
-    background:#d32f2f;
+   .btnExportar{
+
+    background:#43a047;
+
+    border:none;
 
     color:#fff;
+
+    border-radius:18px;
+
+    padding:7px 14px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+    display:inline-block;
+
+    margin-right:8px;
+
+}
+
+.btnExportar:hover{
+
+    background:#2e7d32;
 
 }
