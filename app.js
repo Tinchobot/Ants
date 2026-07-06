@@ -43,25 +43,7 @@ guardarBtn.addEventListener("click", guardar);
 entrada.addEventListener("keydown", (e) => {
 
     if (e.key === "Enter") {
-
-    const monto = Number(numeros[numeros.length-1]);
-
-    const concepto = texto
-        .replace(numeros[numeros.length-1],"")
-        .replace(/\s+/g," ")
-        .trim();
-
-    return{
-
-        concepto:
-            concepto.charAt(0).toUpperCase()+
-            concepto.slice(1),
-
-        monto
-
-    };
-
-}
+        
         guardar();
 
     }
@@ -87,7 +69,23 @@ function interpretarGasto(texto){
 
         return null;
 
-    }
+
+const monto = Number(numeros[numeros.length - 1]);
+
+const concepto = texto
+    .replace(numeros[numeros.length - 1], "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+return {
+    concepto:
+        concepto.charAt(0).toUpperCase() +
+        concepto.slice(1),
+
+    monto
+};
+
+}
     
 async function guardar() {
 
