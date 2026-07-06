@@ -278,7 +278,7 @@ if ("webkitSpeechRecognition" in window) {
     reconocimiento.lang = "es-AR";
     reconocimiento.interimResults = false;
     reconocimiento.continuous = false;
-    reconocimiento.maxAlternatives = 1;
+    reconocimiento.maxAlternatives = 5;
 
     vozBtn.addEventListener("click", () => {
 
