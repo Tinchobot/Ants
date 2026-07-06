@@ -306,49 +306,73 @@ function actualizarPantalla(){
 
 function eliminarGasto(indice){
 
-    if(!confirm("¿Eliminar este gasto?")){
+    const gasto = historial[indice];
+
+    const accion = prompt(
+`Escribí:
+
+E = Editar
+
+B = Borrar
+
+Cancelar = Salir`
+    );
+
+    if(accion===null) return;
+
+    if(accion.toUpperCase()==="B"){
+
+        if(!confirm("¿Eliminar este gasto?")) return;
+
+        historial.splice(indice,1);
+
+        localStorage.setItem(
+            "ants_historial",
+            JSON.stringify(historial)
+        );
+
+        actualizarPantalla();
+
+        mostrar("🗑️ Gasto eliminado","#d32f2f");
 
         return;
 
     }
 
-    historial.splice(indice,1);
+    if(accion.toUpperCase()==="E"){
 
-    localStorage.setItem(
+        const nuevoConcepto=prompt(
+            "Concepto:",
+            gasto.concepto
+        );
 
-        "ants_historial",
+        if(nuevoConcepto===null) return;
 
-        JSON.stringify(historial)
+        const nuevoMonto=prompt(
+            "Monto:",
+            gasto.monto
+        );
 
-    );
+        if(nuevoMonto===null) return;
 
-    actualizarPantalla();
+        gasto.concepto=nuevoConcepto;
 
-    mostrar(
+        gasto.monto=Number(
+            nuevoMonto
+            .replace(/\./g,"")
+            .replace(",",".")
+        );
 
-        "🗑️ Gasto eliminado",
+        localStorage.setItem(
+            "ants_historial",
+            JSON.stringify(historial)
+        );
 
-        "#d32f2f"
+        actualizarPantalla();
 
-    );
+        mostrar("✏️ Gasto actualizado","#2e7d32");
 
-}
-
-// ---------------------------
-// Mensajes
-// ---------------------------
-
-function mostrar(texto,color){
-
-    mensaje.innerHTML=texto;
-
-    mensaje.style.color=color;
-
-    setTimeout(()=>{
-
-        mensaje.innerHTML="";
-
-    },3000);
+    }
 
 }
 // ---------------------------
