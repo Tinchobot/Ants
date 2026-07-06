@@ -11,8 +11,8 @@
 
 <meta name="theme-color" content="#FFD54F">
 
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <link rel="manifest" href="manifest.json">
@@ -29,7 +29,7 @@
 
 <div id="splash">
 
-    <img src="ant.png" class="antSplash">
+    <img src="ant.png" class="antSplash" alt="Ants">
 
     <h1>ANTS</h1>
 
@@ -41,76 +41,71 @@
 
 <header>
 
-<img src="./ant.png" class="logo" alt="Ants">
+    <img src="ant.png" class="logo" alt="Ants">
 
-<h2>¿En qué gastamos ahora?</h2>
+    <h2>¿En qué gastamos ahora?</h2>
 
 </header>
 
 <section class="panel">
 
-<input
+    <input
+        id="entrada"
+        type="text"
+        placeholder="Ej: Nafta 58000"
+        autocomplete="off"
+    >
 
-id="entrada"
+    <div class="acciones">
 
-type="text"
+        <button id="voz">
+            🎤
+        </button>
 
-placeholder="Ej: Nafta 58000"
+        <button id="guardar">
+            💾 Guardar
+        </button>
 
-autocomplete="off"
+    </div>
 
->
-
-<div class="acciones">
-
-<button id="voz">
-
-🎤
-
-</button>
-
-<button id="guardar">
-
-💾 Guardar
-
-</button>
-
-</div>
-
-<div id="mensaje"></div>
+    <div id="mensaje"></div>
 
 </section>
 
 <section class="resumen">
 
-<div class="cardResumen">
-    
-<button id="borrarTodo" class="btnSecundario">
-    🗑️ Borrar todo
-</button>
-<h3>Hoy</h3>
+    <div class="cardResumen">
 
-<span id="totalHoy">$0</span>
+        <button
+            id="borrarTodo"
+            class="btnSecundario"
+            onclick="borrarTodo()">
 
-<small id="cantidadHoy">0 gastos</small>
+            🗑️ Borrar todo
 
-</div>
+        </button>
+
+        <h3>Hoy</h3>
+
+        <span id="totalHoy">$ 0</span>
+
+        <small id="cantidadHoy">0 gastos</small>
+
+    </div>
 
 </section>
 
 <section class="historial">
 
-<h3>Últimos gastos</h3>
+    <h3>Últimos gastos</h3>
 
-<ul id="listaHistorial">
+    <ul id="listaHistorial">
 
-<li class="vacio">
+        <li class="vacio">
+            Todavía no hay gastos.
+        </li>
 
-Todavía no hay gastos.
-
-</li>
-
-</ul>
+    </ul>
 
 </section>
 
@@ -131,3 +126,7 @@ if ("serviceWorker" in navigator) {
 }
 
 </script>
+
+</body>
+
+</html>
