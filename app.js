@@ -43,7 +43,46 @@ guardarBtn.addEventListener("click", guardar);
 entrada.addEventListener("keydown", (e) => {
 
     if (e.key === "Enter") {
+        
+function interpretarGasto(texto){
 
+    texto = texto.toLowerCase().trim();
+
+    // Elimina "pesos"
+    texto = texto.replace(/\bpesos?\b/g,"");
+
+    // Convierte "58 mil" en "58000"
+    texto = texto.replace(/(\d+)\s*mil\b/g,(m,n)=>Number(n)*1000);
+
+    // Elimina puntos, comas y espacios del número
+    texto = texto.replace(/(\d)[., ](?=\d)/g,"$1");
+
+    const numeros = texto.match(/\d+/g);
+
+    if(!numeros){
+
+        return null;
+
+    }
+
+    const monto = Number(numeros[numeros.length-1]);
+
+    const concepto = texto
+        .replace(numeros[numeros.length-1],"")
+        .replace(/\s+/g," ")
+        .trim();
+
+    return{
+
+        concepto:
+            concepto.charAt(0).toUpperCase()+
+            concepto.slice(1),
+
+        monto
+
+    };
+
+}
         guardar();
 
     }
@@ -61,40 +100,19 @@ async function guardar() {
 
     }
 
-    const partes = texto.split(/\s+/);
+    const gastoInterpretado = interpretarGasto(texto);
 
-    if (partes.length < 2) {
+if(!gastoInterpretado){
 
-        mostrar("Formato: Nafta 58000", "#d32f2f");
+    mostrar("No entendí el gasto.", "#d32f2f");
 
-        return;
+    return;
 
-    }
+}
 
-    let montoTexto = partes.pop();
+const concepto = gastoInterpretado.concepto;
 
-    const concepto = partes.join(" ");
-
-    if (montoTexto.includes(",")) {
-
-        montoTexto = montoTexto
-            .replace(/\./g, "")
-            .replace(",", ".");
-
-    } else {
-
-        montoTexto = montoTexto.replace(/\./g, "");
-
-    }
-
-    const monto = Number(montoTexto);
-
-    if (isNaN(monto)) {
-
-        mostrar("Monto inválido", "#d32f2f");
-
-        return;
-
+const monto = gastoInterpretado.monto;
     }
 
     guardarBtn.disabled = true;
