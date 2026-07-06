@@ -43,27 +43,6 @@ guardarBtn.addEventListener("click", guardar);
 entrada.addEventListener("keydown", (e) => {
 
     if (e.key === "Enter") {
-        
-function interpretarGasto(texto){
-
-    texto = texto.toLowerCase().trim();
-
-    // Elimina "pesos"
-    texto = texto.replace(/\bpesos?\b/g,"");
-
-    // Convierte "58 mil" en "58000"
-    texto = texto.replace(/(\d+)\s*mil\b/g,(m,n)=>Number(n)*1000);
-
-    // Elimina puntos, comas y espacios del número
-    texto = texto.replace(/(\d)[., ](?=\d)/g,"$1");
-
-    const numeros = texto.match(/\d+/g);
-
-    if(!numeros){
-
-        return null;
-
-    }
 
     const monto = Number(numeros[numeros.length-1]);
 
@@ -88,6 +67,28 @@ function interpretarGasto(texto){
     }
 
 });
+
+function interpretarGasto(texto){
+
+    texto = texto.toLowerCase().trim();
+
+    // Elimina "pesos"
+    texto = texto.replace(/\bpesos?\b/g,"");
+
+    // Convierte "58 mil" en "58000"
+    texto = texto.replace(/(\d+)\s*mil\b/g,(m,n)=>Number(n)*1000);
+
+    // Elimina puntos, comas y espacios del número
+    texto = texto.replace(/(\d)[., ](?=\d)/g,"$1");
+
+    const numeros = texto.match(/\d+/g);
+
+    if(!numeros){
+
+        return null;
+
+    }
+    
 async function guardar() {
 
     const texto = entrada.value.trim();
@@ -113,7 +114,6 @@ if(!gastoInterpretado){
 const concepto = gastoInterpretado.concepto;
 
 const monto = gastoInterpretado.monto;
-    }
 
     guardarBtn.disabled = true;
 
