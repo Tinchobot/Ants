@@ -8,6 +8,7 @@ const WEBHOOK = "https://hook.us2.make.com/ecky1ftg71ist2i2j3pgmvqcxk7ig77j";
 const entrada = document.getElementById("entrada");
 const guardarBtn = document.getElementById("guardar");
 const vozBtn = document.getElementById("voz");
+const exportarBtn = document.getElementById("exportar");
 const mensaje = document.getElementById("mensaje");
 const lista = document.getElementById("listaHistorial");
 const totalHoy = document.getElementById("totalHoy");
@@ -39,6 +40,8 @@ setTimeout(() => {
 actualizarPantalla();
 
 guardarBtn.addEventListener("click", guardar);
+
+exportarBtn.addEventListener("click", exportarExcel);
 
 entrada.addEventListener("keydown", (e) => {
 
@@ -385,5 +388,41 @@ function borrarTodo() {
     actualizarPantalla();
 
     mostrar("🗑️ Historial eliminado", "#d32f2f");
+
+}
+function exportarExcel(){
+
+    if(historial.length===0){
+
+        mostrar("No hay gastos para exportar.", "#ef6c00");
+        return;
+
+    }
+
+    const datos = historial.map(gasto => ({
+
+        Fecha: gasto.fecha,
+        Hora: gasto.hora,
+        Concepto: gasto.concepto,
+        Monto: gasto.monto
+
+    }));
+
+    const hoja = XLSX.utils.json_to_sheet(datos);
+
+    const libro = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(libro, hoja, "Gastos");
+
+    const hoy = new Date();
+
+    const nombre =
+        "Ants_" +
+        hoy.toISOString().slice(0,10) +
+        ".xlsx";
+
+    XLSX.writeFile(libro, nombre);
+
+    mostrar("📄 Excel exportado", "#2e7d32");
 
 }
