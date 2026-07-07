@@ -9,6 +9,7 @@ const entrada = document.getElementById("entrada");
 const guardarBtn = document.getElementById("guardar");
 const vozBtn = document.getElementById("voz");
 const exportarBtn = document.getElementById("exportar");
+const borrarTodoBtn = document.getElementById("borrarTodo");
 const mensaje = document.getElementById("mensaje");
 const lista = document.getElementById("listaHistorial");
 const totalHoy = document.getElementById("totalHoy");
@@ -42,6 +43,8 @@ actualizarPantalla();
 guardarBtn.addEventListener("click", guardar);
 
 exportarBtn.addEventListener("click", exportarExcel);
+
+borrarTodoBtn.addEventListener("click", borrarTodo);
 
 entrada.addEventListener("keydown", (e) => {
 
