@@ -462,7 +462,7 @@ font-size:32px;
 
 }
 
-.linkEliminar{
+.btnSecundario{
 
     flex:1;
 
@@ -486,13 +486,13 @@ font-size:32px;
 
 }
 
-.linkEliminar:hover{
+.btnSecundario:hover{
 
     transform:translateY(-2px);
 
 }
 
-.linkEliminar:active{
+.btnSecundario:active{
 
     transform:scale(.97);
 
