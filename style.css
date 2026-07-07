@@ -318,6 +318,28 @@ button{
 
 }
 
+#totalGeneral{
+
+    display:block;
+
+    font-size:32px;
+
+    font-weight:bold;
+
+    margin-top:8px;
+
+}
+
+#cantidadGeneral{
+
+    display:block;
+
+    margin-top:6px;
+
+    color:#666;
+
+}
+
 /* ================= Historial ================= */
 
 .historial{
@@ -393,6 +415,12 @@ font-size:18px;
 #totalHoy{
 
 font-size:32px;
+
+}
+
+#totalGeneral{
+
+    font-size:28px;
 
 }
 
