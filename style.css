@@ -419,66 +419,75 @@ font-size:32px;
 
 .accionesResumen{
 
+    display:flex;
+    justify-content:center;
+    gap:10px;
     margin-top:18px;
-
-    text-align:center;
 
 }
 
 .linkEliminar{
 
-    background:#fff;
+    flex:1;
 
-    border:1px solid #d32f2f;
+    background:#d32f2f;
 
-    color:#d32f2f;
+    color:#fff;
 
-    border-radius:18px;
+    border:none;
 
-    padding:7px 14px;
+    border-radius:16px;
 
-    font-size:13px;
+    padding:12px;
 
-    font-weight:600;
+    font-size:15px;
+
+    font-weight:bold;
 
     cursor:pointer;
 
     transition:.2s;
-
-    display:inline-block;
 
 }
 
 .linkEliminar:hover{
 
-   .btnExportar{
+    transform:translateY(-2px);
 
-    background:#43a047;
+}
 
-    border:none;
+.linkEliminar:active{
+
+    transform:scale(.97);
+
+}
+
+.btnExportar{
+
+    flex:1;
+
+    background:#4CAF50;
 
     color:#fff;
 
-    border-radius:18px;
+    border:none;
 
-    padding:7px 14px;
+    border-radius:16px;
 
-    font-size:13px;
+    padding:12px;
 
-    font-weight:600;
+    font-size:15px;
+
+    font-weight:bold;
 
     cursor:pointer;
 
     transition:.2s;
 
-    display:inline-block;
-
-    margin-right:8px;
-
 }
 
 .btnExportar:hover{
 
-    background:#2e7d32;
+    transform:translateY(-2px);
 
 }
