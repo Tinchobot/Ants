@@ -1,11 +1,11 @@
 {
   "name": "Ants",
   "short_name": "Ants",
-  "description": "Registro inteligente de gastos personales",
+  "description": "Ants en la app ideal  para el Registro inteligente de gastos personales del día a día. Muy sencilla y fácil de usar.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#FFF9C4",
-  "theme_color": "#F4C542",
+  "background_color": "#ffd200",
+  "theme_color": "#fec100",
   "orientation": "portrait",
   "icons": [
     {
@@ -18,5 +18,6 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "id": "Ants 1.0"
 }
