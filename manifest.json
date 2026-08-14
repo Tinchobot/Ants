@@ -1,11 +1,11 @@
 {
   "name": "Ants",
   "short_name": "Ants",
-  "description": "Ants en la app ideal  para el Registro inteligente de gastos personales del día a día. Muy sencilla y fácil de usar.",
+  "description": "Registro inteligente de gastos personales",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffd200",
-  "theme_color": "#fec100",
+  "background_color": "#FFF9C4",
+  "theme_color": "#F4C542",
   "orientation": "portrait",
   "icons": [
     {
@@ -19,5 +19,21 @@
       "type": "image/png"
     }
   ],
-  "id": "Ants 1.0"
+  "lang": "es",
+  "categories": [
+    "business",
+    "finance",
+    "shopping"
+  ],
+  "id": "Ants 1.0",
+  "dir": "auto",
+  "iarc_rating_id": "16",
+  "prefer_related_applications": true,
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.tribab.tricount.android&amp;pcampaignid=web_share",
+      "id": "tricount"
+    }
+  ]
 }
