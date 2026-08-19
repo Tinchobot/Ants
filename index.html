@@ -33,37 +33,99 @@
 
     <h1>ANTS</h1>
 
-    <p>Cada peso cuenta.</p>
+    <p data-i18n="app.tagline">Cada peso cuenta.</p>
+
+    <div class="marca marcaSplash">
+        <img src="firma.svg" alt="by tintaps" class="logoMarca">
+    </div>
 
 </div>
 
 <main id="app" class="oculto">
 
+<div class="barraSuperior">
+
+    <span id="badgePremium" class="badgePremium oculto" data-i18n="premium.activoBadge">✨ Premium activo</span>
+
+    <select
+        id="idiomaSelector"
+        class="selectorIdioma"
+        aria-label="Idioma"
+        data-i18n-aria="idioma.etiqueta"
+    >
+        <option value="es">🇦🇷 Español</option>
+        <option value="en">🇺🇸 English</option>
+        <option value="pt">🇧🇷 Português</option>
+        <option value="it">🇮🇹 Italiano</option>
+    </select>
+
+</div>
+
 <header>
 
     <img src="ant.png" class="logo" alt="Ants">
 
-    <h2>¿En qué gastamos ahora?</h2>
+    <h2 data-i18n="app.pregunta">¿En qué gastamos ahora?</h2>
 
 </header>
 
-<section class="panel">
+<nav class="tabs">
 
-    <input
-        id="entrada"
-        type="text"
-        placeholder="Ej: Nafta 58000"
-        autocomplete="off"
-    >
+    <button class="tab activo" data-vista="gastos" data-i18n="tabs.gastos">💰 Gastos</button>
+    <button class="tab" data-vista="estadisticas" data-i18n="tabs.estadisticas">📊 Estadísticas</button>
+    <button class="tab" data-vista="metas" data-i18n="tabs.metas">🎯 Metas</button>
 
-    <div class="acciones">
+</nav>
 
-        <button id="voz">
+<section id="bannerPremium" class="bannerPremium oculto">
+
+    <div class="bannerPremioTexto">
+        <strong data-i18n="premium.bannerTitulo">Versión gratuita</strong>
+        <small data-i18n="premium.bannerTexto">Desbloqueá estadísticas, metas de gasto y backup en la nube.</small>
+    </div>
+
+    <div class="bannerPremioAccion">
+        <button class="btnPremium btnComprarPremium" data-i18n="premium.boton">🔓 Desbloquear versión completa</button>
+        <div class="bannerPremioPrecio">
+            <small data-i18n="premium.precioMonto">Pago único de US$3.99</small>
+            <small class="bannerPremioSinSuscripcion" data-i18n="premium.sinSuscripcion">SIN SUSCRIPCIONES</small>
+        </div>
+    </div>
+
+</section>
+
+<section class="panel vistaGastos">
+
+    <div class="filaEntrada">
+
+        <input
+            id="entrada"
+            type="text"
+            placeholder="Ej: Nafta 58000"
+            data-i18n-placeholder="app.placeholder"
+            autocomplete="off"
+        >
+
+        <button id="voz" aria-label="Dictar gasto" data-i18n-aria="app.vozAria">
             🎤
         </button>
 
-        <button id="guardar">
-            💾 Guardar
+    </div>
+
+    <p class="ayudaGuardar" data-i18n="app.ayudaGuardar">¿Qué tipo de gasto fue?</p>
+
+    <div class="acciones">
+
+        <button class="btnGuardar esNecesario" data-tipo="necesario" data-i18n="tipos.necesario">
+            Necesario
+        </button>
+
+        <button class="btnGuardar esEvitable" data-tipo="evitable" data-i18n="tipos.evitable">
+            Evitable
+        </button>
+
+        <button class="btnGuardar esInnecesario" data-tipo="innecesario" data-i18n="tipos.innecesario">
+            Innecesario
         </button>
 
     </div>
@@ -72,31 +134,62 @@
 
 </section>
 
-<section class="resumen">
+<section class="filtros">
+
+    <div class="filtroChips">
+
+        <button class="chip activo" data-filtro="todo" data-i18n="filtros.todo">Todo</button>
+        <button class="chip" data-filtro="semana" data-i18n="filtros.semana">Semana</button>
+        <button class="chip" data-filtro="mes" data-i18n="filtros.mes">Mes</button>
+        <button class="chip" data-filtro="rango" data-i18n="filtros.rango">Rango</button>
+
+    </div>
+
+    <div id="rangoFechas" class="rangoFechas oculto">
+
+        <label>
+            <span data-i18n="filtros.desde">Desde</span>
+            <input type="date" id="fechaDesde">
+        </label>
+
+        <label>
+            <span data-i18n="filtros.hasta">Hasta</span>
+            <input type="date" id="fechaHasta">
+        </label>
+
+    </div>
+
+</section>
+
+<section class="resumen vistaGastos">
 
     <div class="cardResumen">
 
-<h3>Hoy</h3>
+<h3 data-i18n="resumen.hoy">Hoy</h3>
 
 <span id="totalHoy">$0</span>
 
 <small id="cantidadHoy">0 gastos</small>
 
+<ul id="desgloseHoy" class="desglose"></ul>
+
 <hr class="separadorResumen">
 
-<h3>Acumulado</h3>
+<h3 id="etiquetaPeriodo">Acumulado</h3>
 
 <span id="totalGeneral">$0</span>
 
 <small id="cantidadGeneral">0 gastos</small>
 
+<ul id="desglosePeriodo" class="desglose"></ul>
+
 <div class="accionesResumen">
 
-    <button id="exportar" class="btnExportar">
+    <button id="exportar" class="btnExportar" data-i18n="resumen.exportar">
         📄 Exportar
     </button>
 
-    <button id="borrarTodo" class="btnSecundario">
+    <button id="borrarTodo" class="btnSecundario" data-i18n="resumen.borrarTodo">
         🗑️ Borrar todo
     </button>
 
@@ -106,23 +199,138 @@
         
 </section>
 
-<section class="historial">
+<section class="historial vistaGastos">
 
-    <h3>Últimos gastos</h3>
+    <h3 id="tituloHistorial">Últimos gastos</h3>
 
     <ul id="listaHistorial">
 
-        <li class="vacio">
+        <li class="vacio" data-i18n="historial.vacioTotal">
             Todavía no hay gastos.
         </li>
 
     </ul>
 
+    <button id="verMas" class="btnVerMas oculto">
+        Ver más
+    </button>
+
+    <small id="contadorHistorial" class="contadorHistorial"></small>
+
 </section>
+
+<section id="vistaEstadisticas" class="vistaEstadisticas oculto">
+
+    <div id="candadoEstadisticas" class="candado oculto">
+
+        <div class="candadoIcono">🔒</div>
+        <h3 data-i18n="premium.candadoTitulo">Función premium</h3>
+        <p data-i18n="premium.candadoTexto">Desbloqueá esta función con el pago único de Ants Premium.</p>
+
+        <button class="btnPremium btnComprarPremium" data-i18n="premium.candadoBoton">🔓 Desbloquear</button>
+
+        <div class="candadoPrecio">
+            <small data-i18n="premium.precioMonto">Pago único de US$3.99</small>
+            <small class="candadoSinSuscripcion" data-i18n="premium.sinSuscripcion">SIN SUSCRIPCIONES</small>
+        </div>
+
+    </div>
+
+    <div id="contenidoEstadisticas" class="oculto">
+
+        <div class="cardResumen cardGrafico">
+
+            <h3 id="tituloTorta">Acumulado</h3>
+
+            <div class="contenedorGrafico contenedorTorta">
+                <canvas id="graficoTorta"></canvas>
+            </div>
+
+            <p id="tortaVacio" class="vacioGrafico oculto" data-i18n="historial.vacioPeriodo">
+                No hay gastos en este período.
+            </p>
+
+        </div>
+
+        <div class="cardResumen cardGrafico">
+
+            <h3 data-i18n="estadisticas.ultimos6Meses">Últimos 6 meses</h3>
+
+            <div class="contenedorGrafico contenedorBarras">
+                <canvas id="graficoBarras"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section id="vistaMetas" class="vistaMetas oculto">
+
+    <div id="candadoMetas" class="candado oculto">
+
+        <div class="candadoIcono">🔒</div>
+        <h3 data-i18n="premium.candadoTitulo">Función premium</h3>
+        <p data-i18n="premium.candadoTexto">Desbloqueá esta función con el pago único de Ants Premium.</p>
+
+        <button class="btnPremium btnComprarPremium" data-i18n="premium.candadoBoton">🔓 Desbloquear</button>
+
+        <div class="candadoPrecio">
+            <small data-i18n="premium.precioMonto">Pago único de US$3.99</small>
+            <small class="candadoSinSuscripcion" data-i18n="premium.sinSuscripcion">SIN SUSCRIPCIONES</small>
+        </div>
+
+    </div>
+
+    <div id="contenidoMetas" class="oculto">
+
+        <div class="cardResumen cardMeta">
+
+            <h3 data-i18n="metas.titulo">Meta de gasto mensual</h3>
+
+            <div id="metaSinDefinir" class="metaSinDefinir oculto">
+                <p data-i18n="metas.sinMeta">Todavía no configuraste una meta. Definí cuánto querés gastar como máximo este mes.</p>
+            </div>
+
+            <div id="metaDefinida" class="metaDefinida oculto">
+
+                <div class="barraMetaFondo">
+                    <div id="barraMetaProgreso" class="barraMetaProgreso"></div>
+                </div>
+
+                <p id="metaTexto" class="metaTexto"></p>
+                <p id="metaAlerta" class="metaAlerta oculto"></p>
+
+            </div>
+
+            <div class="filaMeta">
+                <input
+                    type="number"
+                    id="metaInput"
+                    inputmode="decimal"
+                    placeholder="Ej: 50000"
+                    data-i18n-placeholder="metas.placeholder"
+                >
+                <button id="guardarMeta" class="btnGuardarMeta" data-i18n="metas.guardar">Guardar meta</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<footer class="marca marcaPie">
+    <img src="firma.svg" alt="by tintaps" class="logoMarca">
+</footer>
 
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="xlsx.full.min.js"></script>
+<script src="chart.umd.min.js"></script>
+<script src="i18n.js"></script>
+<script src="premium.js"></script>
 <script src="app.js"></script>
 
 <script>

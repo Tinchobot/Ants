@@ -1,13 +1,21 @@
-const CACHE_NAME = "ants-v2.2";
+const CACHE_NAME = "ants-v4.8";
 
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
+  "./privacidad.html",
   "./style.css",
   "./app.js",
+  "./i18n.js",
+  "./premium.js",
   "./manifest.json",
   "./icon-192.png",
-  "./icon-512.png"
+  "./icon-512.png",
+  "./ant.png",
+  "./guardar.mp3",
+  "./xlsx.full.min.js",
+  "./chart.umd.min.js",
+  "./firma.svg"
 ];
 
 // Instalar
@@ -38,28 +46,43 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Siempre intenta bajar la versión nueva
+// Cache-first: si ya lo tenemos guardado, lo servimos al instante
+// y recién después buscamos una versión nueva en segundo plano.
+// La app arranca sin esperar la red; la actualización, si la hay,
+// queda lista para el próximo arranque.
 self.addEventListener("fetch", (event) => {
 
   if (event.request.method !== "GET") return;
 
+  // Ignoramos esquemas raros (extensiones del navegador, etc.)
+  if (!event.request.url.startsWith("http")) return;
+
   event.respondWith(
 
-    fetch(event.request)
-      .then(response => {
+    caches.match(event.request).then(cacheada => {
 
-        const copia = response.clone();
+      const desdeLaRed = fetch(event.request)
+        .then(respuesta => {
 
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, copia);
-        });
+          if (respuesta && respuesta.ok) {
 
-        return response;
+            const copia = respuesta.clone();
 
-      })
-      .catch(() => {
-        return caches.match(event.request);
-      })
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, copia);
+            });
+
+          }
+
+          return respuesta;
+
+        })
+        .catch(() => cacheada);
+
+      // Si está en caché sale ya; si no, esperamos la red.
+      return cacheada || desdeLaRed;
+
+    })
 
   );
 

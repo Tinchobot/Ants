@@ -102,15 +102,65 @@ visibility:hidden;
 
 }
 
+/* ================= Marca personal ================= */
+
+.marca{
+
+    text-align:center;
+
+}
+
+.logoMarca{
+
+    display:block;
+
+    margin:auto;
+
+}
+
+/* En el splash: separado del título por una línea fina */
+.marcaSplash{
+
+    margin-top:28px;
+
+    padding-top:16px;
+
+    border-top:1px solid rgba(0,0,0,.15);
+
+    width:150px;
+
+}
+
+.marcaSplash .logoMarca{
+
+    width:110px;
+
+}
+
+/* Al pie de la app: discreto, después del historial */
+.marcaPie{
+
+    margin:20px 0 8px;
+
+    opacity:.6;
+
+}
+
+.marcaPie .logoMarca{
+
+    width:96px;
+
+}
+
 /* ================= App ================= */
 
 #app{
 
-    max-width:500px;
+    max-width:460px;
 
     margin:auto;
 
-    padding:20px;
+    padding:16px;
 
 }
 
@@ -118,23 +168,572 @@ header{
 
     text-align:center;
 
-    margin-top:25px;
+    margin-top:16px;
 
 }
 
 .logo{
 
-    width:120px;
+    width:88px;
 
-    filter:drop-shadow(0 10px 18px rgba(0,0,0,.25));
+    filter:drop-shadow(0 8px 14px rgba(0,0,0,.25));
 
 }
 
 header h2{
 
-    margin-top:15px;
+    margin-top:10px;
 
-    font-size:30px;
+    font-size:23px;
+
+}
+
+/* ================= Selector de idioma ================= */
+
+/* flex-end (no space-between): así, si el badge de premium está
+   oculto, el selector de idioma se queda solo pegado a la derecha
+   en vez de irse al extremo izquierdo. Cuando el badge sí se
+   muestra, su propio margin-right:auto empuja al selector afuera. */
+.barraSuperior{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-top:4px;
+
+}
+
+.selectorIdioma{
+
+    padding:7px 10px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,.55);
+
+    color:#5b4a00;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.selectorIdioma:hover{
+
+    background:rgba(255,255,255,.85);
+
+}
+
+/* ================= Premium ================= */
+
+.badgePremium{
+
+    margin-right:auto;
+
+    padding:7px 10px;
+
+    border-radius:12px;
+
+    background:linear-gradient(135deg,#7c4dff,#5c3dd6);
+
+    color:#fff;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+}
+
+.bannerPremium{
+
+    margin-top:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    background:linear-gradient(135deg,#7c4dff,#5c3dd6);
+
+    border-radius:18px;
+
+    padding:14px 16px;
+
+    box-shadow:0 8px 20px rgba(92,61,214,.35);
+
+    color:#fff;
+
+}
+
+/* Misma trampa que .rangoFechas: sin esto, ".bannerPremium{display:
+   flex}" le gana a ".oculto{display:none}" por venir después en la
+   hoja, y el banner queda visible aunque tenga la clase oculto. */
+.bannerPremium.oculto{
+
+    display:none;
+
+}
+
+.bannerPremioTexto{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:2px;
+
+}
+
+.bannerPremioTexto strong{
+
+    font-size:14px;
+
+}
+
+.bannerPremioTexto small{
+
+    font-size:12px;
+
+    opacity:.9;
+
+}
+
+.bannerPremioAccion{
+
+    flex:none;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:6px;
+
+}
+
+.bannerPremioPrecio{
+
+    max-width:170px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:2px;
+
+    text-align:center;
+
+}
+
+.bannerPremioPrecio small{
+
+    font-size:11px;
+
+    line-height:1.3;
+
+    color:rgba(255,255,255,.85);
+
+}
+
+.bannerPremioPrecio small.bannerPremioSinSuscripcion{
+
+    font-size:10px;
+
+    font-weight:bold;
+
+    letter-spacing:.5px;
+
+    color:#fff;
+
+}
+
+.btnPremium{
+
+    flex:none;
+
+    background:#fff;
+
+    color:#5c3dd6;
+
+    border:none;
+
+    border-radius:13px;
+
+    padding:10px 14px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+    white-space:nowrap;
+
+}
+
+.btnPremium:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.btnPremium:active{
+
+    transform:scale(.97);
+
+}
+
+.btnPremium:disabled{
+
+    opacity:.6;
+
+    cursor:default;
+
+    transform:none;
+
+}
+
+/* Pantalla de candado que reemplaza el contenido de una función
+   premium cuando todavía no se compró. */
+.candado{
+
+    text-align:center;
+
+    padding:30px 16px;
+
+}
+
+.candadoIcono{
+
+    font-size:40px;
+
+    margin-bottom:10px;
+
+}
+
+.candado h3{
+
+    font-size:16px;
+
+    margin-bottom:8px;
+
+}
+
+.candado p{
+
+    color:#777;
+
+    font-size:13px;
+
+    margin-bottom:16px;
+
+    line-height:1.4;
+
+}
+
+.candado .btnPremium{
+
+    background:linear-gradient(135deg,#7c4dff,#5c3dd6);
+
+    color:#fff;
+
+    padding:12px 20px;
+
+}
+
+.candadoPrecio{
+
+    margin-top:10px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:2px;
+
+}
+
+.candadoPrecio small{
+
+    font-size:12px;
+
+    color:#999;
+
+}
+
+.candadoPrecio small.candadoSinSuscripcion{
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    letter-spacing:.5px;
+
+    color:#5c3dd6;
+
+}
+
+/* ================= Metas ================= */
+
+.vistaMetas{
+
+    margin-top:14px;
+
+}
+
+.cardMeta{
+
+    text-align:left;
+
+}
+
+.cardMeta h3{
+
+    text-align:center;
+
+    color:#888;
+
+    font-size:13px;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+    margin-bottom:14px;
+
+}
+
+.metaSinDefinir p{
+
+    color:#777;
+
+    font-size:14px;
+
+    text-align:center;
+
+    margin-bottom:14px;
+
+    line-height:1.4;
+
+}
+
+.barraMetaFondo{
+
+    width:100%;
+
+    height:14px;
+
+    border-radius:20px;
+
+    background:#eee;
+
+    overflow:hidden;
+
+}
+
+.barraMetaProgreso{
+
+    height:100%;
+
+    border-radius:20px;
+
+    background:#2e7d32;
+
+    transition:width .3s ease;
+
+}
+
+.barraMetaProgreso.cerca{
+
+    background:#ef6c00;
+
+}
+
+.barraMetaProgreso.superada{
+
+    background:#c62828;
+
+}
+
+.metaTexto{
+
+    margin-top:10px;
+
+    text-align:center;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+}
+
+.metaAlerta{
+
+    margin-top:8px;
+
+    text-align:center;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    padding:8px;
+
+    border-radius:12px;
+
+}
+
+.metaAlerta.cerca{
+
+    background:#fff3e0;
+
+    color:#ef6c00;
+
+}
+
+.metaAlerta.superada{
+
+    background:#ffebee;
+
+    color:#c62828;
+
+}
+
+.filaMeta{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-top:16px;
+
+}
+
+.filaMeta input{
+
+    flex:1;
+
+    min-width:0;
+
+    padding:12px;
+
+    border-radius:13px;
+
+    border:2px solid #DDD;
+
+    font-size:15px;
+
+    font-family:inherit;
+
+    outline:none;
+
+}
+
+.filaMeta input:focus{
+
+    border-color:#FFD54F;
+
+}
+
+.btnGuardarMeta{
+
+    flex:none;
+
+    background:#333;
+
+    color:#fff;
+
+    border:none;
+
+    border-radius:13px;
+
+    padding:12px 16px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.btnGuardarMeta:active{
+
+    transform:scale(.96);
+
+}
+
+/* ================= Tabs ================= */
+
+.tabs{
+
+    display:flex;
+
+    gap:7px;
+
+    margin-top:18px;
+
+}
+
+.tab{
+
+    flex:1;
+
+    padding:12px 6px;
+
+    border:none;
+
+    border-radius:15px;
+
+    background:rgba(255,255,255,.55);
+
+    color:#5b4a00;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.tab:hover{
+
+    background:rgba(255,255,255,.85);
+
+}
+
+.tab.activo{
+
+    background:#333;
+
+    color:#fff;
 
 }
 
@@ -142,29 +741,42 @@ header h2{
 
 .panel{
 
-    margin-top:25px;
+    margin-top:18px;
 
     background:white;
 
-    border-radius:24px;
+    border-radius:20px;
 
-    padding:25px;
+    padding:18px 18px 14px;
 
-    box-shadow:0 12px 35px rgba(0,0,0,.15);
+    box-shadow:0 10px 28px rgba(0,0,0,.15);
+
+}
+
+/* El micrófono va en la misma fila que el campo */
+.filaEntrada{
+
+    display:flex;
+
+    gap:10px;
+
+    align-items:stretch;
 
 }
 
 #entrada{
 
-    width:100%;
+    flex:1;
 
-    padding:18px;
+    min-width:0;
 
-    border-radius:18px;
+    padding:14px;
+
+    border-radius:15px;
 
     border:2px solid #DDD;
 
-    font-size:22px;
+    font-size:17px;
 
     outline:none;
 
@@ -180,47 +792,23 @@ header h2{
 
 }
 
-.acciones{
-
-    display:flex;
-
-    gap:12px;
-
-    margin-top:20px;
-
-}
-
 #voz{
 
-    width:70px;
+    width:54px;
+
+    flex:none;
+
+    padding:0;
 
     border:none;
 
-    border-radius:18px;
+    border-radius:15px;
 
     background:#333;
 
     color:white;
 
-    font-size:28px;
-
-    cursor:pointer;
-
-}
-
-#guardar{
-
-    flex:1;
-
-    border:none;
-
-    border-radius:18px;
-
-    background:#FFD54F;
-
-    font-size:20px;
-
-    font-weight:bold;
+    font-size:22px;
 
     cursor:pointer;
 
@@ -228,15 +816,88 @@ header h2{
 
 }
 
-#guardar:hover{
+#voz:active{
 
-    transform:translateY(-2px);
+    transform:scale(.95);
 
 }
 
-#guardar:active{
+.ayudaGuardar{
 
-    transform:scale(.97);
+    margin-top:12px;
+
+    text-align:center;
+
+    font-size:12px;
+
+    color:#999;
+
+}
+
+/* Los tres botones que guardan y clasifican a la vez */
+.acciones{
+
+    display:flex;
+
+    gap:7px;
+
+    margin-top:8px;
+
+}
+
+.btnGuardar{
+
+    flex:1;
+
+    padding:13px 4px;
+
+    border:none;
+
+    border-radius:15px;
+
+    color:#fff;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    line-height:1.2;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.btnGuardar:active{
+
+    transform:scale(.96);
+
+}
+
+.btnGuardar:disabled{
+
+    opacity:.5;
+
+    cursor:default;
+
+}
+
+.esNecesario{
+
+    background:#2e7d32;
+
+}
+
+.esEvitable{
+
+    background:#ef6c00;
+
+}
+
+.esInnecesario{
+
+    background:#c62828;
 
 }
 
@@ -248,9 +909,11 @@ button{
 
 #mensaje{
 
-    margin-top:18px;
+    margin-top:10px;
 
-    min-height:24px;
+    min-height:18px;
+
+    font-size:14px;
 
     text-align:center;
 
@@ -258,17 +921,155 @@ button{
 
 }
 
+/* Mientras no hay mensaje no ocupa lugar:
+   el panel termina justo debajo de los botones */
+#mensaje:empty{
+
+    display:none;
+
+}
+
+/* ================= Filtros ================= */
+
+.filtros{
+
+    margin-top:14px;
+
+}
+
+.filtroChips{
+
+    display:flex;
+
+    gap:7px;
+
+}
+
+/* Anula el padding:18px global de los botones */
+.chip{
+
+    flex:1;
+
+    padding:10px 5px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,.55);
+
+    color:#5b4a00;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.chip:hover{
+
+    background:rgba(255,255,255,.85);
+
+}
+
+.chip.activo{
+
+    background:#333;
+
+    color:#fff;
+
+}
+
+.chip.bloqueado::before{
+
+    content:"🔒 ";
+
+}
+
+.rangoFechas{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:10px;
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:12px;
+
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
+
+}
+
+/* .oculto sola pierde contra ".rangoFechas{display:flex}" porque
+   comparten especificidad y esta regla viene después en la hoja.
+   Con las dos clases juntas gana por especificidad, sin !important. */
+.rangoFechas.oculto{
+
+    display:none;
+
+}
+
+.rangoFechas label{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    color:#666;
+
+}
+
+.rangoFechas input{
+
+    width:100%;
+
+    padding:10px;
+
+    border:2px solid #DDD;
+
+    border-radius:12px;
+
+    font-size:15px;
+
+    font-family:inherit;
+
+    outline:none;
+
+}
+
+.rangoFechas input:focus{
+
+    border-color:#FFD54F;
+
+}
+
 /* ================= Resumen ================= */
 
 .resumen{
 
-    margin-top:20px;
+    margin-top:14px;
 
 }
 
 .separadorResumen{
 
-    margin:18px 0;
+    margin:14px 0;
 
     border:none;
 
@@ -280,11 +1081,11 @@ button{
 
     background:white;
 
-    border-radius:22px;
+    border-radius:20px;
 
-    padding:20px;
+    padding:18px;
 
-    box-shadow:0 8px 25px rgba(0,0,0,.12);
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
 
     text-align:center;
 
@@ -292,9 +1093,15 @@ button{
 
 .cardResumen h3{
 
-    color:#666;
+    color:#888;
 
-    margin-bottom:10px;
+    font-size:13px;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+    margin-bottom:6px;
 
 }
 
@@ -302,7 +1109,7 @@ button{
 
     display:block;
 
-    font-size:38px;
+    font-size:30px;
 
     font-weight:bold;
 
@@ -312,9 +1119,11 @@ button{
 
     display:block;
 
-    margin-top:6px;
+    margin-top:4px;
 
-    color:#666;
+    font-size:12px;
+
+    color:#888;
 
 }
 
@@ -322,11 +1131,9 @@ button{
 
     display:block;
 
-    font-size:32px;
+    font-size:28px;
 
     font-weight:bold;
-
-    margin-top:8px;
 
 }
 
@@ -334,7 +1141,61 @@ button{
 
     display:block;
 
-    margin-top:6px;
+    margin-top:4px;
+
+    font-size:12px;
+
+    color:#888;
+
+}
+
+/* ================= Desglose por tipo ================= */
+
+.desglose{
+
+    list-style:none;
+
+    margin-top:12px;
+
+    text-align:left;
+
+}
+
+.desglose li{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:5px 0;
+
+    font-size:14px;
+
+}
+
+.desglose li + li{
+
+    border-top:1px solid #f2f2f2;
+
+}
+
+.punto{
+
+    width:9px;
+
+    height:9px;
+
+    border-radius:50%;
+
+    flex:none;
+
+}
+
+.desgloseNombre{
+
+    flex:1;
 
     color:#666;
 
@@ -344,21 +1205,23 @@ button{
 
 .historial{
 
-    margin-top:20px;
+    margin-top:14px;
 
     background:white;
 
-    border-radius:22px;
+    border-radius:20px;
 
-    padding:20px;
+    padding:18px;
 
-    box-shadow:0 8px 25px rgba(0,0,0,.12);
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
 
 }
 
 .historial h3{
 
-    margin-bottom:15px;
+    margin-bottom:12px;
+
+    font-size:16px;
 
 }
 
@@ -370,7 +1233,7 @@ button{
 
 #listaHistorial li{
 
-    padding:14px 0;
+    padding:11px 0;
 
     border-bottom:1px solid #EEE;
 
@@ -379,6 +1242,10 @@ button{
     justify-content:space-between;
 
     align-items:center;
+
+    gap:8px;
+
+    font-size:15px;
 
 }
 
@@ -396,31 +1263,201 @@ button{
 
 }
 
+.itemInfo{
+
+    flex:1;
+
+}
+
+/* Distintivo de tipo en cada gasto del historial */
+.etiquetaTipo{
+
+    display:inline-block;
+
+    margin-left:8px;
+
+    padding:2px 9px;
+
+    border-radius:20px;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    color:#fff;
+
+    vertical-align:middle;
+
+}
+
+.tipo-necesario{
+
+    background:#2e7d32;
+
+}
+
+.tipo-evitable{
+
+    background:#ef6c00;
+
+}
+
+.tipo-innecesario{
+
+    background:#c62828;
+
+}
+
+.tipo-sin{
+
+    background:#bdbdbd;
+
+}
+
+.btnVerMas{
+
+    width:100%;
+
+    margin-top:12px;
+
+    padding:11px;
+
+    border:2px solid #FFD54F;
+
+    border-radius:15px;
+
+    background:#FFF9E6;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.btnVerMas:hover{
+
+    background:#FFD54F;
+
+}
+
+.btnVerMas:active{
+
+    transform:scale(.98);
+
+}
+
+.contadorHistorial{
+
+    display:block;
+
+    margin-top:10px;
+
+    text-align:center;
+
+    font-size:12px;
+
+    color:#999;
+
+}
+
+/* ================= Estadísticas ================= */
+
+.vistaEstadisticas{
+
+    margin-top:14px;
+
+}
+
+.cardGrafico{
+
+    margin-bottom:14px;
+
+}
+
+.cardGrafico h3{
+
+    color:#888;
+
+    font-size:13px;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+}
+
+.contenedorGrafico{
+
+    position:relative;
+
+    height:230px;
+
+    margin-top:16px;
+
+}
+
+.contenedorBarras{
+
+    height:210px;
+
+}
+
+.vacioGrafico{
+
+    margin-top:16px;
+
+    text-align:center;
+
+    color:#777;
+
+    font-size:14px;
+
+}
+
 /* ================= Responsive ================= */
 
 @media(max-width:480px){
 
 header h2{
 
-font-size:24px;
+font-size:20px;
 
 }
 
 #entrada{
 
-font-size:18px;
+font-size:16px;
 
 }
 
 #totalHoy{
 
-font-size:32px;
+font-size:27px;
 
 }
 
 #totalGeneral{
 
-    font-size:28px;
+    font-size:25px;
+
+}
+
+/* En pantallas angostas "Innecesario" queda justo */
+.btnGuardar{
+
+    font-size:12px;
+
+    padding:13px 2px;
+
+}
+
+.desglose li{
+
+    font-size:13px;
 
 }
 
@@ -432,10 +1469,12 @@ font-size:32px;
     background:#e53935;
     color:#fff;
     border:none;
-    border-radius:12px;
-    width:42px;
-    height:42px;
-    font-size:20px;
+    border-radius:11px;
+    width:36px;
+    height:36px;
+    padding:0;
+    flex:none;
+    font-size:16px;
     cursor:pointer;
     transition:.2s;
 
@@ -459,8 +1498,8 @@ font-size:32px;
 
     display:flex;
     justify-content:center;
-    gap:10px;
-    margin-top:18px;
+    gap:9px;
+    margin-top:16px;
 
 }
 
@@ -474,11 +1513,11 @@ font-size:32px;
 
     border:none;
 
-    border-radius:18px;
+    border-radius:15px;
 
-    padding:14px;
+    padding:11px;
 
-    font-size:16px;
+    font-size:14px;
 
     font-weight:bold;
 
@@ -510,11 +1549,11 @@ font-size:32px;
 
     border:none;
 
-    border-radius:18px;
+    border-radius:15px;
 
-    padding:14px;
+    padding:11px;
 
-    font-size:16px;
+    font-size:14px;
 
     font-weight:bold;
 
