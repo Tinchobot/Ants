@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.tinchobot.twa",
+        "sha256_cert_fingerprints": ["2E:B8:52:A5:21:10:55:EB:34:D1:1B:02:89:C1:A4:97:8B:53:B5:D4:77:92:5B:4C:00:D1:CD:15:42:8D:FB:74"]
+      }
+    }]
