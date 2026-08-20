@@ -44,17 +44,23 @@ async function obtenerServicioDigitalGoods() {
 
     if (!digitalGoodsDisponible()) {
 
+        console.log("[Ants Premium] Digital Goods API no disponible en este navegador/instalación.");
+
         return null;
 
     }
 
     try {
 
-        return await window.getDigitalGoodsService(METODO_PAGO_PLAY);
+        const servicio = await window.getDigitalGoodsService(METODO_PAGO_PLAY);
+
+        console.log("[Ants Premium] Servicio de Digital Goods obtenido:", servicio);
+
+        return servicio;
 
     } catch (e) {
 
-        console.error("No se pudo obtener el servicio de Digital Goods", e);
+        console.error("[Ants Premium] No se pudo obtener el servicio de Digital Goods", e);
 
         return null;
 
@@ -135,11 +141,28 @@ async function consultarComprasPremium() {
 
         const compras = await servicio.listPurchases();
 
-        return compras.some((compra) => compra.itemId === PRODUCTO_PREMIUM);
+        // Log crudo a propósito: si el product ID de Play Console no
+        // coincide letra por letra con PRODUCTO_PREMIUM, acá se ve
+        // el itemId real que devuelve Play para compararlo a mano.
+        console.log(
+            "[Ants Premium] listPurchases() devolvió",
+            compras.length, "compra(s):",
+            compras.map((c) => ({ itemId: c.itemId, purchaseToken: c.purchaseToken }))
+        );
+
+        const encontrada = compras.some((compra) => compra.itemId === PRODUCTO_PREMIUM);
+
+        console.log(
+            "[Ants Premium] ¿Está",
+            JSON.stringify(PRODUCTO_PREMIUM),
+            "entre las compras?", encontrada
+        );
+
+        return encontrada;
 
     } catch (e) {
 
-        console.error("No se pudieron listar las compras", e);
+        console.error("[Ants Premium] No se pudieron listar las compras", e);
 
         return null;
 
@@ -156,13 +179,19 @@ async function sincronizarPremiumConPlay() {
 
     if (!digitalGoodsDisponible()) {
 
+        console.log("[Ants Premium] sincronizarPremiumConPlay: sin Digital Goods API, no se toca localStorage.");
+
         return;
 
     }
 
+    console.log("[Ants Premium] sincronizarPremiumConPlay: consultando compras reales en Play...");
+
     const comprado = await consultarComprasPremium();
 
     if (comprado === true) {
+
+        console.log("[Ants Premium] Compra confirmada por Play → guardando premium en localStorage.");
 
         guardarPremiumLocal("compra");
 
@@ -172,13 +201,22 @@ async function sincronizarPremiumConPlay() {
 
         if (local && local.origen === "compra") {
 
+            console.log("[Ants Premium] Play ya no reporta la compra (¿reembolso?) → borrando premium local.");
+
             borrarPremiumLocal();
 
         }
 
-    }
+    } else {
 
-    // comprado === null: no se pudo verificar, no tocamos nada.
+        // comprado === null: no se pudo verificar (ver logs de
+        // obtenerServicioDigitalGoods/consultarComprasPremium arriba
+        // para la causa puntual). A propósito no tocamos localStorage
+        // acá para no pisar un estado guardado (incluido el modo de
+        // prueba) por un error transitorio de red o del servicio.
+        console.log("[Ants Premium] No se pudo verificar el estado contra Play (comprado === null); localStorage queda sin tocar.");
+
+    }
 
 }
 
@@ -191,6 +229,8 @@ async function sincronizarPremiumConPlay() {
 // app.js), mostrando el mensaje de fallback del punto 1 antes de
 // intentar nada.
 async function comprarPremium() {
+
+    let purchaseToken = null;
 
     try {
 
@@ -210,11 +250,41 @@ async function comprarPremium() {
 
         const solicitud = new PaymentRequest(metodos, detalles);
 
+        console.log("[Ants Premium] Mostrando el cuadro de pago de Play Billing...");
+
         const respuesta = await solicitud.show();
 
-        const purchaseToken = respuesta.details && respuesta.details.purchaseToken;
+        purchaseToken = respuesta.details && respuesta.details.purchaseToken;
+
+        console.log("[Ants Premium] Pago confirmado por Play. purchaseToken:", purchaseToken);
 
         await respuesta.complete("success");
+
+    } catch (e) {
+
+        // El usuario cerró el cuadro de pago sin completar la compra.
+        if (e && e.name === "AbortError") {
+
+            console.log("[Ants Premium] El usuario canceló el cuadro de pago.");
+
+            return "cancelado";
+
+        }
+
+        console.error("[Ants Premium] Error antes de completar el pago", e);
+
+        return "error";
+
+    }
+
+    // A partir de acá el pago ya se completó y Play ya cobró — un
+    // problema al reconocer (acknowledge) la compra NO puede hacer
+    // que tratemos esto como una compra fallida, o el usuario queda
+    // cobrado sin desbloquear nada (bug real que se dio en producción:
+    // el acknowledge tiraba una excepción intermitente y esa excepción
+    // caía en el mismo catch que el pago, perdiendo el "ok"). Por eso
+    // va en su propio try/catch, separado del de arriba.
+    try {
 
         const servicio = await obtenerServicioDigitalGoods();
 
@@ -225,24 +295,30 @@ async function comprarPremium() {
             // habría que volver a comprar).
             await servicio.acknowledge(purchaseToken, "onetime");
 
-        }
+            console.log("[Ants Premium] Compra reconocida (acknowledge) correctamente.");
 
-        return "ok";
+        } else {
+
+            console.warn(
+                "[Ants Premium] No se pudo hacer acknowledge (servicio:",
+                !!servicio, "purchaseToken:", !!purchaseToken,
+                "). Si esto pasa seguido, Play puede reembolsar la compra a los 3 días."
+            );
+
+        }
 
     } catch (e) {
 
-        // El usuario cerró el cuadro de pago sin completar la compra.
-        if (e && e.name === "AbortError") {
-
-            return "cancelado";
-
-        }
-
-        console.error("Error al comprar premium", e);
-
-        return "error";
+        // No devolvemos "error" acá: el pago ya se completó y no hay
+        // que perder el desbloqueo por esto. sincronizarPremiumConPlay
+        // va a reintentar el acknowledge implícito la próxima vez que
+        // la app tenga foco (listPurchases sigue viendo la compra
+        // aunque no esté reconocida todavía).
+        console.error("[Ants Premium] El pago se completó pero falló el acknowledge (se reintentará solo)", e);
 
     }
+
+    return "ok";
 
 }
 
