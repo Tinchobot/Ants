@@ -336,9 +336,17 @@ aplicarTraducciones();
 // Pinta de una con lo que ya haya en localStorage (rápido, sin
 // esperar nada async); si estamos en una TWA de verdad, esto se
 // reconcilia con Play un instante después.
+logDebugPremium("Arranque de la app. Premium en localStorage antes de sincronizar:", esPremium());
+
 actualizarEstadoPremium();
 
-sincronizarPremiumConPlay().then(actualizarEstadoPremium);
+sincronizarPremiumConPlay().then(() => {
+
+    logDebugPremium("Sincronización con Play terminada. Premium en localStorage ahora:", esPremium());
+
+    actualizarEstadoPremium();
+
+});
 
 actualizarPantalla();
 
@@ -920,7 +928,11 @@ function actualizarEstadoPremium() {
 
 async function iniciarCompraPremium() {
 
+    logDebugPremium("Se tocó 'Desbloquear versión completa'.");
+
     if (!digitalGoodsDisponible()) {
+
+        logDebugPremium("digitalGoodsDisponible() da false → se corta acá, muestro el mensaje de fallback.");
 
         mostrar(t("premium.noDisponible"), "#ef6c00");
 
@@ -934,11 +946,15 @@ async function iniciarCompraPremium() {
 
     const resultado = await comprarPremium();
 
+    logDebugPremium("comprarPremium() resolvió con:", resultado);
+
     botonesComprarPremium.forEach((boton) => { boton.disabled = false; });
 
     if (resultado === "ok") {
 
         guardarPremiumLocal("compra");
+
+        logDebugPremium("guardarPremiumLocal('compra') ejecutado → localStorage actualizado.");
 
         actualizarEstadoPremium();
 
