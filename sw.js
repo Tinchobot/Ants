@@ -1,4 +1,4 @@
-const CACHE_NAME = "ants-v4.10";
+const CACHE_NAME = "ants-v4.11";
 
 const FILES_TO_CACHE = [
   "./",

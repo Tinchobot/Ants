@@ -31,84 +31,6 @@ const METODO_PAGO_PLAY = "https://play.google.com/billing";
 const CLAVE_PREMIUM = "ants_premium";
 
 // -------------------------------------
-// Panel de debug visible (TEMPORAL)
-//
-// Se agregó para diagnosticar un caso real: una compra que Play cobró
-// de verdad pero que no desbloqueó el premium en el dispositivo, sin
-// poder usar depuración USB para leer la consola. Muestra en pantalla
-// los mismos pasos que ya se logueaban por consola.
-//
-// Sacar esta sección (y las llamadas a logDebugPremium/
-// logErrorDebugPremium de más abajo, volviéndolas console.log/
-// console.error directos) una vez resuelto el diagnóstico — el panel
-// no es parte de la interfaz definitiva de la app.
-// -------------------------------------
-
-function agregarLineaPanelDebug(mensaje) {
-
-    try {
-
-        const panel = document.getElementById("panelDebugPremium");
-        const texto = document.getElementById("panelDebugPremiumTexto");
-
-        if (!panel || !texto) return;
-
-        const hora = new Date().toLocaleTimeString("es-AR");
-
-        texto.textContent += `[${hora}] ${mensaje}\n`;
-
-        panel.classList.remove("oculto");
-
-        if (typeof panel.scrollTop === "number") {
-
-            panel.scrollTop = panel.scrollHeight;
-
-        }
-
-    } catch (e) {}
-
-}
-
-function formatearDatoDebug(dato) {
-
-    if (dato === undefined) return "";
-
-    if (typeof dato === "string") return " " + dato;
-
-    try {
-
-        return " " + JSON.stringify(dato);
-
-    } catch (e) {
-
-        return " " + String(dato);
-
-    }
-
-}
-
-// Reemplaza a console.log en los puntos clave del flujo premium: deja
-// el log en consola (por si hay devtools) y además lo muestra en el
-// panel visible, para poder diagnosticar sin depuración USB.
-function logDebugPremium(mensaje, dato) {
-
-    console.log("[Ants Premium]", mensaje, dato === undefined ? "" : dato);
-
-    agregarLineaPanelDebug(mensaje + formatearDatoDebug(dato));
-
-}
-
-function logErrorDebugPremium(mensaje, error) {
-
-    console.error("[Ants Premium]", mensaje, error);
-
-    const detalle = error && (error.message || String(error));
-
-    agregarLineaPanelDebug("❌ " + mensaje + formatearDatoDebug(detalle));
-
-}
-
-// -------------------------------------
 // Detección
 // -------------------------------------
 
@@ -122,7 +44,7 @@ async function obtenerServicioDigitalGoods() {
 
     if (!digitalGoodsDisponible()) {
 
-        logDebugPremium("Digital Goods API no disponible en este navegador/instalación.");
+        console.log("[Ants Premium] Digital Goods API no disponible en este navegador/instalación.");
 
         return null;
 
@@ -132,13 +54,13 @@ async function obtenerServicioDigitalGoods() {
 
         const servicio = await window.getDigitalGoodsService(METODO_PAGO_PLAY);
 
-        logDebugPremium("Servicio de Digital Goods obtenido:", !!servicio);
+        console.log("[Ants Premium] Servicio de Digital Goods obtenido:", servicio);
 
         return servicio;
 
     } catch (e) {
 
-        logErrorDebugPremium("No se pudo obtener el servicio de Digital Goods", e);
+        console.error("[Ants Premium] No se pudo obtener el servicio de Digital Goods", e);
 
         return null;
 
@@ -222,20 +144,25 @@ async function consultarComprasPremium() {
         // Log crudo a propósito: si el product ID de Play Console no
         // coincide letra por letra con PRODUCTO_PREMIUM, acá se ve
         // el itemId real que devuelve Play para compararlo a mano.
-        logDebugPremium(
-            `listPurchases() devolvió ${compras.length} compra(s):`,
+        console.log(
+            "[Ants Premium] listPurchases() devolvió",
+            compras.length, "compra(s):",
             compras.map((c) => ({ itemId: c.itemId, purchaseToken: c.purchaseToken }))
         );
 
         const encontrada = compras.some((compra) => compra.itemId === PRODUCTO_PREMIUM);
 
-        logDebugPremium(`¿Está "${PRODUCTO_PREMIUM}" entre las compras?`, encontrada);
+        console.log(
+            "[Ants Premium] ¿Está",
+            JSON.stringify(PRODUCTO_PREMIUM),
+            "entre las compras?", encontrada
+        );
 
         return encontrada;
 
     } catch (e) {
 
-        logErrorDebugPremium("No se pudieron listar las compras", e);
+        console.error("[Ants Premium] No se pudieron listar las compras", e);
 
         return null;
 
@@ -252,19 +179,19 @@ async function sincronizarPremiumConPlay() {
 
     if (!digitalGoodsDisponible()) {
 
-        logDebugPremium("sincronizarPremiumConPlay: sin Digital Goods API, no se toca localStorage.");
+        console.log("[Ants Premium] sincronizarPremiumConPlay: sin Digital Goods API, no se toca localStorage.");
 
         return;
 
     }
 
-    logDebugPremium("sincronizarPremiumConPlay: consultando compras reales en Play...");
+    console.log("[Ants Premium] sincronizarPremiumConPlay: consultando compras reales en Play...");
 
     const comprado = await consultarComprasPremium();
 
     if (comprado === true) {
 
-        logDebugPremium("Compra confirmada por Play → guardando premium en localStorage.");
+        console.log("[Ants Premium] Compra confirmada por Play → guardando premium en localStorage.");
 
         guardarPremiumLocal("compra");
 
@@ -274,7 +201,7 @@ async function sincronizarPremiumConPlay() {
 
         if (local && local.origen === "compra") {
 
-            logDebugPremium("Play ya no reporta la compra (¿reembolso?) → borrando premium local.");
+            console.log("[Ants Premium] Play ya no reporta la compra (¿reembolso?) → borrando premium local.");
 
             borrarPremiumLocal();
 
@@ -287,7 +214,7 @@ async function sincronizarPremiumConPlay() {
         // para la causa puntual). A propósito no tocamos localStorage
         // acá para no pisar un estado guardado (incluido el modo de
         // prueba) por un error transitorio de red o del servicio.
-        logDebugPremium("No se pudo verificar el estado contra Play (comprado === null); localStorage queda sin tocar.");
+        console.log("[Ants Premium] No se pudo verificar el estado contra Play (comprado === null); localStorage queda sin tocar.");
 
     }
 
@@ -323,13 +250,13 @@ async function comprarPremium() {
 
         const solicitud = new PaymentRequest(metodos, detalles);
 
-        logDebugPremium("Mostrando el cuadro de pago de Play Billing...");
+        console.log("[Ants Premium] Mostrando el cuadro de pago de Play Billing...");
 
         const respuesta = await solicitud.show();
 
         purchaseToken = respuesta.details && respuesta.details.purchaseToken;
 
-        logDebugPremium("Pago confirmado por Play. purchaseToken:", purchaseToken ? "sí, presente" : "vacío/ausente");
+        console.log("[Ants Premium] Pago confirmado por Play. purchaseToken:", purchaseToken);
 
         await respuesta.complete("success");
 
@@ -338,13 +265,13 @@ async function comprarPremium() {
         // El usuario cerró el cuadro de pago sin completar la compra.
         if (e && e.name === "AbortError") {
 
-            logDebugPremium("El usuario canceló el cuadro de pago.");
+            console.log("[Ants Premium] El usuario canceló el cuadro de pago.");
 
             return "cancelado";
 
         }
 
-        logErrorDebugPremium("Error antes de completar el pago", e);
+        console.error("[Ants Premium] Error antes de completar el pago", e);
 
         return "error";
 
@@ -368,13 +295,14 @@ async function comprarPremium() {
             // habría que volver a comprar).
             await servicio.acknowledge(purchaseToken, "onetime");
 
-            logDebugPremium("Compra reconocida (acknowledge) correctamente.");
+            console.log("[Ants Premium] Compra reconocida (acknowledge) correctamente.");
 
         } else {
 
-            logDebugPremium(
-                "⚠️ No se pudo hacer acknowledge",
-                { servicioDisponible: !!servicio, purchaseTokenPresente: !!purchaseToken }
+            console.warn(
+                "[Ants Premium] No se pudo hacer acknowledge (servicio:",
+                !!servicio, "purchaseToken:", !!purchaseToken,
+                "). Si esto pasa seguido, Play puede reembolsar la compra a los 3 días."
             );
 
         }
@@ -386,7 +314,7 @@ async function comprarPremium() {
         // va a reintentar el acknowledge implícito la próxima vez que
         // la app tenga foco (listPurchases sigue viendo la compra
         // aunque no esté reconocida todavía).
-        logErrorDebugPremium("El pago se completó pero falló el acknowledge (se reintentará solo)", e);
+        console.error("[Ants Premium] El pago se completó pero falló el acknowledge (se reintentará solo)", e);
 
     }
 

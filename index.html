@@ -327,24 +327,6 @@
 
 </main>
 
-<!--
-    Panel de debug visible (TEMPORAL) — muestra en pantalla el flujo
-    de compra premium (Digital Goods API) para diagnosticar sin
-    depuración USB. Sacarlo (este bloque + su CSS + las llamadas a
-    logDebugPremium/logErrorDebugPremium en premium.js y app.js) una
-    vez resuelto el diagnóstico.
--->
-<div id="panelDebugPremium" class="panelDebugPremium oculto">
-    <div class="panelDebugPremiumCabecera">
-        <strong>🐜 Debug premium (temporal)</strong>
-        <div class="panelDebugPremiumBotones">
-            <button type="button" id="btnCopiarDebugPremium">Copiar</button>
-            <button type="button" id="btnCerrarDebugPremium">✕</button>
-        </div>
-    </div>
-    <pre id="panelDebugPremiumTexto"></pre>
-</div>
-
 <script src="xlsx.full.min.js"></script>
 <script src="chart.umd.min.js"></script>
 <script src="i18n.js"></script>
@@ -360,55 +342,6 @@ if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("./sw.js");
 
     });
-
-}
-
-// Panel de debug visible (TEMPORAL) — ver comentario junto al <div>
-// panelDebugPremium más arriba. Sacar este bloque junto con el resto.
-{
-
-    const btnCopiar = document.getElementById("btnCopiarDebugPremium");
-    const btnCerrar = document.getElementById("btnCerrarDebugPremium");
-    const panel = document.getElementById("panelDebugPremium");
-    const texto = document.getElementById("panelDebugPremiumTexto");
-
-    if (btnCopiar && texto) {
-
-        btnCopiar.addEventListener("click", async () => {
-
-            try {
-
-                await navigator.clipboard.writeText(texto.textContent);
-
-                btnCopiar.textContent = "¡Copiado!";
-
-                setTimeout(() => { btnCopiar.textContent = "Copiar"; }, 1500);
-
-            } catch (e) {
-
-                // Sin permiso de portapapeles (o navegador viejo): al
-                // menos queda seleccionado para copiar a mano.
-                const rango = document.createRange();
-                rango.selectNodeContents(texto);
-                const seleccion = window.getSelection();
-                seleccion.removeAllRanges();
-                seleccion.addRange(rango);
-
-            }
-
-        });
-
-    }
-
-    if (btnCerrar && panel) {
-
-        btnCerrar.addEventListener("click", () => {
-
-            panel.classList.add("oculto");
-
-        });
-
-    }
 
 }
 
