@@ -1,8 +1,10 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.tintaps.gastoshormiga",
-    "sha256_cert_fingerprints": ["2E:B8:52:A5:21:10:55:EB:34:D1:1B:02:89:C1:A4:97:8B:53:B5:D4:77:92:5B:4C:00:D1:CD:15:42:8D:FB:74"]
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.tintaps.gastoshormiga",
+      "sha256_cert_fingerprints": ["88:50:4E:61:5B:52:0F:6F:F9:5B:97:FB:90:E8:60:9F:85:40:D4:D3:2A:CC:CB:F3:1E:99:B9:8B:AC:06:1D:92"]
+    }
   }
-}]
+]
