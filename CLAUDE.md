@@ -1,24 +1,32 @@
 # Ants
 
 Registro de gastos personales, en español (con inglés/portugués/italiano
-agregados), pensado para andar como PWA instalable en el celular. Tagline:
-"Cada peso cuenta."
+agregados), pensado para andar como PWA instalable en el celular — y, en
+paralelo, empaquetada como TWA para publicarse en Google Play. Tagline:
+"Cada peso cuenta." Nombre público en las tiendas: "Registro de Gastos
+Hormiga".
 
 Filosofía central: **todo vive en el dispositivo**. No hay backend, no hay
 cuentas de usuario, no hay servidor propio. Los gastos se guardan en
 `localStorage` y la única forma de sacarlos es exportando a Excel. Esto no
 es un detalle técnico menor — condiciona varias decisiones de diseño
 descritas más abajo (moneda fija en `$`, reconocimiento de compras del
-lado del cliente, etc.).
+lado del cliente, verificación de premium sin servidor, etc.).
 
 ## Cómo está armada
 
 Vanilla JS, sin build ni framework, sin `npm`/bundler. Los archivos se
 sirven tal cual y se cachean con un service worker para uso offline.
 
-- `index.html` — toda la estructura. Usa atributos `data-i18n` /
-  `data-i18n-placeholder` / `data-i18n-aria` para marcar qué texto se
-  traduce solo.
+- `index.html` — toda la estructura de la app (SPA de una sola página,
+  con tabs). Usa atributos `data-i18n` / `data-i18n-placeholder` /
+  `data-i18n-aria` para marcar qué texto se traduce solo.
+- `privacidad.html` — Política de Privacidad, página aparte (no forma
+  parte de la SPA, no carga `app.js`). HTML autocontenido con su propio
+  `<style>` inline que imita la paleta/tipografía de la app en vez de
+  importar `style.css` (evita arrastrar reglas de la app que no aplican
+  ahí). Requisito de las tiendas (Google Play la pide para el listado).
+  Contacto: `infotintaps@gmail.com`.
 - `style.css` — una sola hoja, sin preprocesador. Paleta: amarillo/dorado
   de fondo (`#FFD54F`/`#FFE66D`), blanco para las tarjetas, y verde/naranja/
   rojo (`#2e7d32`/`#ef6c00`/`#c62828`) como colores semánticos fijos de
@@ -38,13 +46,20 @@ sirven tal cual y se cachean con un service worker para uso offline.
 - `sw.js` — cache-first con fallback a red. Cualquier archivo estático
   nuevo que se agregue **tiene que sumarse a `FILES_TO_CACHE`**, y hay que
   bumpear `CACHE_NAME` (`ants-vX.Y`) para que los usuarios reciban la
-  versión nueva. Está en `ants-v4.5`.
+  versión nueva. Está en `ants-v4.8`. Nota: `.well-known/assetlinks.json`
+  y `.nojekyll` (ver sección TWA más abajo) **no** están en esta lista a
+  propósito — no los usa la app en tiempo de ejecución, son metadata que
+  consume Android/Google, no tiene sentido cachearlos para offline.
 - `test.js` — prueba de humo en Node puro (sin runner externo), corre con
   `node test.js`. Carga `i18n.js`, `premium.js` y `app.js` en ese orden
   dentro de un `vm.createContext` con un DOM falso mínimo. **Si se agrega
   un archivo `.js` nuevo del que `app.js` dependa a nivel global, hay que
   sumarlo también acá** (mismo patrón: `vm.runInContext` antes de cargar
-  `app.js`), o el test explota con `ReferenceError`.
+  `app.js`), o el test explota con `ReferenceError`. El DOM falso solo
+  implementa `getElementById` y `querySelectorAll` (con selectores
+  hardcodeados tipo `.chip`) — no tiene `querySelector` genérico, así que
+  el código de `app.js` tiene que resolver elementos únicos con
+  `Array.from(lista).find(...)` en vez de `document.querySelector(...)`.
 
 Orden de carga de scripts (importa): `xlsx.full.min.js` →
 `chart.umd.min.js` → `i18n.js` → `premium.js` → `app.js`.
@@ -109,17 +124,46 @@ Play Billing), con un único producto de pago único (no consumible):
   precio cambia en Play Console, hay que actualizar el texto a mano en
   `i18n.js`, o mejor: cambiar a precio dinámico vía `getDetails()`).
 
-### Limitación real, no un bug
+### TWA y verificación de Digital Asset Links (en curso)
 
 La Digital Goods API **solo funciona dentro de una TWA instalada desde
-Google Play**, con Digital Asset Links verificados. Este repo hoy es una
-PWA suelta, sin empaquetar. Hasta que se arme la TWA (Bubblewrap o
-PWABuilder), se publique `assetlinks.json`, y se dé de alta el producto
-en Play Console, **la compra real no puede completarse en ningún
-navegador** — `digitalGoodsDisponible()` da `false` y el botón siempre va
-a mostrar el mensaje de fallback ("solo disponible en la versión de
-Google Play"). Eso es el comportamiento esperado, no algo para "arreglar"
-en el JS.
+Google Play**, con Digital Asset Links verificados. Se está armando esa
+TWA con **PWABuilder**, lo que ya dejó cosas concretas en el repo:
+
+- `.well-known/assetlinks.json` — declara qué paquete Android puede
+  manejar los links de este dominio (`package_name` +
+  `sha256_cert_fingerprints`). Se regenera cada vez que PWABuilder genera
+  un paquete nuevo con otra firma — **el contenido de este archivo va a
+  seguir cambiando** a medida que se prueben builds; no es un archivo
+  "de una vez y listo". Último valor conocido: `package_name`
+  `com.tintaps.gastoshormiga` (antes fue `io.github.tinchobot.twa`, con
+  otro fingerprint — quedó reemplazado, no hay que restaurarlo).
+  **El fingerprint que hay que publicar es el de Play App Signing**
+  (Play Console → Integridad de la app / Protegida con Play → Gestiona
+  la firma de aplicaciones), no el del keystore local que usa PWABuilder
+  para firmar el AAB que subís — Google re-firma la app al publicarla
+  con su propia clave, así que son fingerprints distintos y solo el de
+  Play App Signing es el que termina en los dispositivos reales.
+- `.nojekyll` (raíz, vacío) — necesario porque GitHub Pages procesa el
+  sitio con Jekyll por default, y Jekyll **ignora carpetas que empiezan
+  con punto** como `.well-known`, así que sin este archivo
+  `assetlinks.json` daba 404 aunque estuviera bien commiteado. Si el
+  archivo desaparece del repo en algún momento, ese síntoma (404 en
+  `/.well-known/algo` con el resto del sitio funcionando) es la primera
+  pista.
+- Se sirve desde GitHub Pages en `https://tinchobot.github.io/Ants/`
+  (repo `github.com/Tinchobot/Ants`, rama `main`), así que
+  `assetlinks.json` queda público en
+  `https://tinchobot.github.io/Ants/.well-known/assetlinks.json`. Google
+  valida contra esa URL, no contra el repo.
+
+Hasta que el paquete generado por PWABuilder esté firmado con el
+fingerprint correcto, `assetlinks.json` esté verificado, y el producto
+esté dado de alta en Play Console, **la compra real no puede completarse
+en ningún navegador suelto** — `digitalGoodsDisponible()` da `false` y el
+botón siempre muestra el mensaje de fallback ("solo disponible en la
+versión de Google Play"). Eso es el comportamiento esperado, no algo
+para "arreglar" en el JS.
 
 ### Estado local y verificación
 
@@ -138,10 +182,18 @@ en el JS.
 
 ### Modo de prueba (dev-only, intencionalmente oculto)
 
-Como no hay TWA publicada, no hay forma de probar la compra real. Desde
-la consola del navegador: `antsDevPremium(true)` simula la compra,
-`antsDevPremium(false)` la deshace. No es un botón ni un gesto de la UI
-a propósito — es solo para desarrollo.
+Como todavía no hay una compra real verificable end-to-end, esta es la
+forma de probar (y de sacar capturas de) las pantallas premium. Desde la
+consola del navegador, con la app abierta:
+
+- `antsDevPremium(true)` → simula la compra, desbloquea todo al toque
+  (no hace falta recargar, `actualizarEstadoPremium()` repinta sola).
+- `antsDevPremium(false)` → la deshace, vuelve al estado gratis.
+
+No es un botón ni un gesto de la UI a propósito — es solo para
+desarrollo. No usar `localStorage.setItem("ants_premium", ...)` a mano:
+la clave real guarda un objeto JSON (`{activo, origen, ts}`), no un
+string plano, y `antsDevPremium` ya arma eso y refresca la pantalla.
 
 ## Qué queda premium
 
@@ -159,9 +211,36 @@ a propósito — es solo para desarrollo.
   filtros de período ("Todo", "Semana", "Mes") no está afectado por
   esto — es una excepción puntual, no el criterio general.
 
-El registro de gastos, el historial, exportar a Excel y borrar todo son
-y quedan **gratis**, sin restricción. Los filtros de período también son
+El registro de gastos, el historial, **exportar a Excel** y borrar todo
+son y quedan **gratis**, sin restricción — incluso en la versión gratuita
+se puede sacar toda la información. Los filtros de período también son
 gratis, con la única excepción de "Rango" (ver arriba).
+
+Nota histórica: el banner premium mencionaba también "backup en la
+nube" como beneficio, con una tarjeta "Próximamente" en la pestaña
+Metas. Se sacó por completo (banner, tarjeta y claves de i18n): implicaba
+un backend que no existe ni está planeado a corto plazo, y no tenía
+sentido seguir prometiéndolo. El texto del banner ahora ofrece
+"estadísticas, metas de gasto y filtrar por períodos específicos" — este
+último ítem es el filtro "Rango" de arriba, que si es real y ya está
+implementado.
+
+## Control de versiones y despliegue
+
+- Repo: `github.com/Tinchobot/Ants` (privado), rama `main`. Tiene
+  historial real de mucho antes de que este repo tuviera un `CLAUDE.md`
+  (commits tipo "Add files via upload" hechos desde la web de GitHub) —
+  si en algún momento hay que rehacer el historial local, no hacerlo con
+  un commit único que lo reemplace: traer `origin/main` y parar un commit
+  nuevo encima (`git reset --soft origin/main` + commit), nunca force-push
+  que lo pise.
+- `.gitignore` excluye `.claude/` (config local de Claude Code con rutas
+  de la máquina, no aporta nada al repo).
+- GitHub Pages sirve el sitio estático desde `main` en
+  `https://tinchobot.github.io/Ants/` — esto es lo que expone
+  `assetlinks.json` para la verificación de la TWA (ver sección de
+  arriba). No confundir esta URL de Pages con una futura instalación
+  real desde Play: Pages solo sirve para que Google valide el dominio.
 
 ## Cosas que ya se supieron mal una vez (para no repetirlas)
 
@@ -176,3 +255,8 @@ gratis, con la única excepción de "Rango" (ver arriba).
   rotos.** Por eso los gráficos de Estadísticas solo se crean/actualizan
   cuando esa pestaña está realmente visible y es premium — nunca "por
   las dudas" en segundo plano.
+- **GitHub Pages + Jekyll ignora carpetas que empiezan con punto.**
+  `.well-known/assetlinks.json` daba 404 aunque estuviera bien
+  commiteado y el resto del sitio funcionara — la causa era que Jekyll
+  no publica nada dentro de `.well-known` sin un `.nojekyll` en la raíz
+  (ver sección TWA arriba).
