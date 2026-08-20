@@ -1,8 +1,8 @@
 [{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "io.github.tinchobot.twa",
-        "sha256_cert_fingerprints": ["2E:B8:52:A5:21:10:55:EB:34:D1:1B:02:89:C1:A4:97:8B:53:B5:D4:77:92:5B:4C:00:D1:CD:15:42:8D:FB:74"]
-      }
-    }]
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.tintaps.gastoshormiga",
+    "sha256_cert_fingerprints": ["2C:B3:0C:CE:F6:C5:88:1E:FE:98:44:71:42:DD:67:6D:75:30:33:12:8F:8C:E4:A4:01:9D:22:60:65:4E:98:51"]
+  }
+}]
