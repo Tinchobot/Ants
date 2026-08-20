@@ -156,6 +156,18 @@ TWA con **PWABuilder**, lo que ya dejó cosas concretas en el repo:
   `assetlinks.json` queda público en
   `https://tinchobot.github.io/Ants/.well-known/assetlinks.json`. Google
   valida contra esa URL, no contra el repo.
+- **`versionCode`/`versionName` (Android) no están en ningún archivo de
+  este repo.** No es parte del Web App Manifest (`manifest.json` de acá
+  no tiene ese campo, es un concepto exclusivo de Android/Play) y no hay
+  ningún `twa-manifest.json` trackeado — eso confirma que el paquete se
+  genera desde el sitio **pwabuilder.com**, no con la CLI local (la CLI
+  sí dejaría un `twa-manifest.json` con `appVersionCode`/`appVersion` en
+  el proyecto Android descargado). El número de versión se define **en
+  el momento de generar el paquete**, en el panel de opciones de
+  Android de PWABuilder (`App version` / `App version code`), y hay que
+  volver a setearlo ahí cada vez — no queda guardado en este repo entre
+  una generación y la siguiente. Google Play ya usó el `versionCode` 1;
+  el próximo paquete que se suba tiene que llevar 2 (o más).
 
 Hasta que el paquete generado por PWABuilder esté firmado con el
 fingerprint correcto, `assetlinks.json` esté verificado, y el producto
